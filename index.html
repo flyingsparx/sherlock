@@ -33,7 +33,6 @@
         }
         node.set_agent_name(agent_name);
         var sentence = "there is a tell card named 'msg_{uid}' that is from the agent '"+agent_name+"' and is to the agent '"+agent_name+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+agent_name+"\\'' as content";
-        console.log(sentence);
         node.add_sentence(sentence);
 
         function update_responses(){
@@ -69,12 +68,12 @@
                     if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
                         if(question.value != null){
                             for(var k = 0; k < instance.values.length; k++){
-                                if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name);}
+                                if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
                             }
                         }
                         if(question.relationship != null){
                             for(var k = 0; k < instance.relationships.length; k++){
-                                if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name);}
+                                if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
                             }
                         }
                     }
