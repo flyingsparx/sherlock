@@ -1,122 +1,59 @@
 <html>
 <head>
-    <style>
-        li.response{
-            display:block;
-            width:100px;
-            height:100px;
-            background:gray;
-            margin:5px;
-            float:left;
-        }
-        li.response.unanswered{background:gray;}
-        li.response.insufficient{background:orange;}
-        li.response.conflicted{background:red;}
-        li.response.answered{background:green;}
-    </style>
+    <meta name="viewport" content="width=500, user-scalable=0">
+    <meta charset="UTF-8">
+    <title>SHERLOCK</title>
+                
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" media="(max-width: 800px),handheld" href="css/device.css">
 </head>
 <body>
-    <div style="position:relative; height:100px;">
-        <textarea placeholder="Enter a message..." style="top:0px;left:0px;position:absolute;width:100%;max-width:100%;;margin:10px auto;z-index:2;height:50px;background:none;" id="input"></textarea>
+  <div id="wrapper">  
+    <div class="overlay" id="login_overlay">
+       <div class="row center">
+           <h1 class="main_title">SHERLOCK</h1> 
+        </div>
+        <div class="row center">
+            <input class="username clear" id="login_username" placeholder="User ID" />
+            <div class="clear"></div>
+            <p style="display:none;color:rgb(220,220,220);font-weight:300;font-size:15px;" id="login_error">Please enter a User ID to continue.</p>
+            <button id="login">Login</button>
+        </div>  
+
     </div>
-    <hr />
-    <h2>Current responses</h2>
-    <ol id="responses"></ol>
+    <div class="overlay" id="moira_overlay">
+        <header>
+	    <button class="change_view dashboard" data-view="dashboard">Dashboard</button> 
+            <button class="logout" id="logout">Logout</button> 
+            <div class="clear"></div>
+        </header>
 
-    <script src="http://cestore.sentinelstream.net/cenode.js"></script>  
-    <script>
-        var node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_CLIENT);    
-        var questions = [];
-        var agent_name = prompt("Enter name");
-        while(agent_name == null){
-            agent_name = prompt("Invalid");
-        }
-        node.set_agent_name(agent_name);
-        var sentence = "there is a tell card named 'msg_{uid}' that is from the agent '"+agent_name+"' and is to the agent '"+agent_name+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+agent_name+"\\'' as content";
-        node.add_sentence(sentence);
-
-        function update_responses(){
-            var resp = document.getElementById("responses");
-            resp.innerHTML = "";
-            for(var i = 0; i < questions.length; i++){
-                var c;
-                if(questions[i].responses.length == 0){c = "unanswered";}
-                else if(questions[i].responses.length < 3){c = "insufficient";}
-                else{
-                    var responses = {};
-                    var response_vols = [];
-                    for(var j = 0; j < questions[i].responses.length; j++){
-                        if(!(questions[i].responses[j] in responses)){responses[questions[i].responses[j]] = 0;}
-                        responses[questions[i].responses[j]]++;
-                    }
-                    for(key in responses){response_vols.push(responses[key]);}
-                    response_vols.sort().reverse();
-                    if(response_vols.length == 1){c = "answered";}
-                    else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){c = "answered";}
-                    else{c = "conflicted";}
-                }
-                resp.innerHTML += '<li onclick="alert(\''+questions[i].text+'\');" class="response '+c+'"></li>';
-            }
-        }
-
-        function check_answers(ins){
-            for(var i = 0; i < questions.length; i++){questions[i].responses = [];}
-            for(var i = 0; i < ins.length; i++){
-                for(var j = 0; j < questions.length; j++){
-                    var instance = ins[i];
-                    var question = questions[j];
-                    if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
-                        if(question.value != null){
-                            for(var k = 0; k < instance.values.length; k++){
-                                if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
-                            }
-                        }
-                        if(question.relationship != null){
-                            for(var k = 0; k < instance.relationships.length; k++){
-                                if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
-                            }
-                        }
-                    }
-                }
-            }
-            update_responses();
-        }
+        <div class="row">
+            <div class="column">
+                <input type="text" id="username" placeholder="User ID" readonly/>
+            </div>
+            <div class="column center">
+                <p id="score"></p>
+            </div> 
+        </div>
+        <div class="clear"></div>
+        <div class="row" id="cards"></div>
+        <textarea id="text" placeholder="Enter your message..."></textarea>
         
-        function load_questions(){
-            var qs = node.get_instances("question");
-            for(var i = 0; i < qs.length; i++){
-                var q = {};
-                q.responses = [];
-                for(var j = 0; j < qs[i].values.length; j++){
-                    q[qs[i].values[j].descriptor] = qs[i].values[j].type_name;
-                }
-                for(var j = 0; j < qs[i].relationships.length; j++){
-                    q[qs[i].relationships[j].label] = qs[i].relationships[j].target_name;
-                }
-                questions.push(q);
-            }
-            update_responses();
-        }
+        <div class="center row">
+            <button id="send">Send message</button>
+        </div>
+    </div>
+    <div class="overlay" id="dashboard_overlay">
+	    <header>
+            <button class="change_view moira" data-view="moira">Sherlock</button> 
+            <div class="clear"></div>
+        </header>
+	<ul id="questions"></ul>
+    </div>
+  </div>
 
-        function poll_for_instances(){
-            setTimeout(function(){
-                check_answers(node.get_instances());
-                poll_for_instances();
-            },1000);
-        }
-        document.getElementById("input").onkeydown = function(event){
-            if(event.keyCode == 13){
-                var sentence = document.getElementById("input").value.replace(/'/g, "\\'");
-                var card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+agent_name+"' and is from the agent '"+agent_name+"' and has the timestamp '{now}' as timestamp";
-                var r = node.add_sentence(card);
-                if(r != null){alert(r);}
-                document.getElementById("input").value = "";
-                event.preventDefault();
-            }
-        }
-        load_questions();
-        poll_for_instances();
-
-    </script>
-</body> 
+  <script src="http://cestore.sentinelstream.net/cenode.js"></script>  
+  <script src="js/main.js"></script>
+  </body> 
 </html>
