@@ -3,6 +3,7 @@ var settings = {
 };
 
 var node;
+var shown_cards = [];
 
 var log = {
     recording_presses : false,
@@ -147,20 +148,23 @@ function update_ui(){
     }
 }
 
-function add_card(card, local){
-    navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-    var c = '<div class="card';
-    if(local){c+=' user';}
-    else{
-        c+=' friend';
-        if(navigator.vibrate){
-            navigator.vibrate([70,40,200]);
+function add_card(card, local, id){
+    if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
+        shown_cards.push(id);
+        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+        var c = '<div class="card';
+        if(local){c+=' user';}
+        else{
+            c+=' friend';
+            if(navigator.vibrate){
+                navigator.vibrate([70,40,200]);
+            }
         }
+        c+='"><p>'+card.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
+        c+='</div>';
+        ui.info.cards.innerHTML+=c;
+        ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
     }
-    c+='"><p>'+card.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
-    c+='</div>';
-    ui.info.cards.innerHTML+=c;
-    ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
 }
 
 function update_responses(){
@@ -191,18 +195,28 @@ function update_responses(){
 function check_answers(ins){
     for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
     for(var i = 0; i < ins.length; i++){
-        for(var j = 0; j < user.questions.length; j++){
-            var instance = ins[i];
-            var question = user.questions[j];
-            if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
-                if(question.value != null){
-                    for(var k = 0; k < instance.values.length; k++){
-                        if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
-                    }
+        if(node.get_instance_relationships(ins[i], "is to").length > 0){
+            var tos = node.get_instance_relationships(ins[i], "is to");
+            for(var j = 0; j < tos.length; j++){
+                if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
+                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name);
                 }
-                if(question.relationship != null){
-                    for(var k = 0; k < instance.relationships.length; k++){
-                        if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
+            }
+        }
+        else{
+            for(var j = 0; j < user.questions.length; j++){
+                var instance = ins[i];
+                var question = user.questions[j];
+                if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
+                    if(question.value != null){
+                        for(var k = 0; k < instance.values.length; k++){
+                            if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
+                        }
+                    }
+                    if(question.relationship != null){
+                        for(var k = 0; k < instance.relationships.length; k++){
+                            if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
+                        }
                     }
                 }
             }
