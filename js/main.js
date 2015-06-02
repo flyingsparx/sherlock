@@ -1,9 +1,11 @@
+var node;
+var shown_cards = [];
+var asked_questions = [];
+var submitted_statements = [];
+
 var settings = {
     logged_in : false,
 };
-
-var node;
-var shown_cards = [];
 
 var log = {
     recording_presses : false,
@@ -119,12 +121,71 @@ function key_pressed(e){
 function send(){
     var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
     var sentence = input.replace(/'/g, "\\'");
+    var card;
+    if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0){
+        card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+        add_card(input, true);
+    }
+    else{
+        card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+        for(var i = 0; i < user.questions.length; i++){
+            var q = user.questions[i];
+            if(q.relationship == null && sentence.toLowerCase().indexOf(q.value.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
+                asked_questions.push(user.questions[i].text);
+            }
+            else if(q.value == null && sentence.toLowerCase().indexOf(q.relationship.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
+                asked_questions.push(user.questions[i].text);
+            }
+        }
+        add_card(input, true);
+        ask_question_based_on_input(sentence);
+
+    }
+    node.add_sentence(card);
+    /*var cards = node.get_instances("tell card");
+    for(var i = 0; i < cards.length; i++){
+        var from = node.get_instance_relationship(cards[i], "is from").name;
+        if(from.toLowerCase() == user.id.toLowerCase()){
+            
+        }
+    }*/
+
     ui.inputs.text.value = "";
-    var card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the agent '"+user.id+"' and has the timestamp '{now}' as timestamp";
-    var r = node.add_sentence(card);
-    if(r != null){alert(r);}
     event.preventDefault();
-    add_card(input, true);
+}
+
+function ask_question_based_on_input(sentence){
+    var ins = node.get_instances("sherlock thing", true);
+    var concerns;
+    var potentials = {};
+    for(var i = 0; i < ins.length; i++){
+        if(sentence.toLowerCase().indexOf(ins[i].name.toLowerCase()) > -1){
+            concerns = ins[i];
+            break
+        }
+    }
+    if(concerns == null){return;}
+    for(var i  = 0; i < user.questions.length; i++){
+        if(user.questions[i].concerns == concerns.name){
+            var state = get_question_state(user.questions[i]);
+            if(state != "answered" && asked_questions.indexOf(user.questions[i].text) == -1){
+                if(potentials[state] == null){potentials[state] = [];}
+                potentials[state].push(user.questions[i]);       
+            }       
+        }
+    }
+    if(potentials.contested != null){
+        add_card(potentials.contested[0].text, false);
+        asked_questions.push(potentials.contested[0].text);
+    }
+    else if(potentials.unconfident != null){
+        add_card(potentials.unconfident[0].text, false);
+        asked_questions.push(potentials.unconfident[0].text);
+    }
+    else if(potentials.unanswered != null){
+        add_card(potentials.unanswered[0].text, false);
+        asked_questions.push(potentials.unanswered[0].text);
+    }
 }
 
 function update_ui(){
@@ -167,32 +228,26 @@ function add_card(card, local, id){
     }
 }
 
-function update_responses(){
-    var resp = document.getElementById("responses");
-    ui.info.questions.innerHTML = "";
-    for(var i = 0; i < user.questions.length; i++){
-        var c;
-        var q = user.questions[i];
-        if(q.responses.length == 0){c = "unanswered";}
-        else if(q.responses.length < 3){c = "unconfident";}
-        else{
-            var responses = {};
-            var response_vols = [];
-            for(var j = 0; j < q.responses.length; j++){
-                if(!(q.responses[j] in responses)){responses[q.responses[j]] = 0;}
-                responses[q.responses[j]]++;
-            }
-            for(key in responses){response_vols.push(responses[key]);}
-            response_vols.sort().reverse();
-            if(response_vols.length == 1){c = "answered";}
-            else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){c = "answered";}
-            else{c = "contested";}
+function get_question_state(q){
+    if(q.responses.length == 0){return "unanswered";}
+    else if(q.responses.length < 3){return "unconfident";}
+    else{
+        var responses = {};
+        var response_vols = [];
+        for(var j = 0; j < q.responses.length; j++){
+            if(!(q.responses[j] in responses)){responses[q.responses[j]] = 0;}
+            responses[q.responses[j]]++;
         }
-        ui.info.questions.innerHTML += '<li onclick="alert(\''+q.text+'\');" class="response question '+c+'">'+(i+1)+'</li>';
+        for(key in responses){response_vols.push(responses[key]);}
+        response_vols.sort().reverse();
+        if(response_vols.length == 1){return "answered";}
+        else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){return "answered";}
+        else{return "contested";}
     }
 }
 
 function check_answers(ins){
+    ui.info.questions.innerHTML = "";
     for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
     for(var i = 0; i < ins.length; i++){
         if(node.get_instance_relationships(ins[i], "is to").length > 0){
@@ -222,7 +277,9 @@ function check_answers(ins){
             }
         }
     }
-    update_responses();
+    for(var i = 0; i < user.questions.length ; i++){
+        ui.info.questions.innerHTML += '<li onclick="alert(\''+user.questions[i].text+'\');" class="response question '+get_question_state(user.questions[i])+'">'+(i+1)+'</li>';
+    }
 }
 
 function load_questions(){
@@ -238,7 +295,6 @@ function load_questions(){
         }
         user.questions.push(q);
     }
-    update_responses();
 }
 
 function poll_for_instances(){
