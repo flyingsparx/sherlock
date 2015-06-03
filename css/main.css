@@ -206,6 +206,13 @@ input#location{
     margin:0px;
     font-family:'Courier', 'monospace';
 }
+.card .author{
+    padding:2px;
+    display:block;
+    background:rgb(0,0,0);
+    color:white;
+    font-size:11px;
+}
 .card.user{
     float:right;
 }

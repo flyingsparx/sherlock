@@ -7,19 +7,14 @@ var settings = {
     logged_in : false,
 };
 
-var log = {
-    recording_presses : false,
-    keypresses : 0,
-    start_time : 0,
-    end_time : 0
-};
-
 var user = {
     id : null,
     score : 0,
     cards : [],
     questions : [],
     answers : [],
+    inputs: [],
+    input_counter : 0,
     current_screen : "login"
 };
 
@@ -87,7 +82,7 @@ function login(){
         return;
     }
 
-    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_CLIENT);
+    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_NODE);
     node.set_agent_name(user.id+" agent");
     node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name()+"' and is to the agent '"+node.get_agent_name()+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name()+"\\'' as content");
 
@@ -112,19 +107,35 @@ function logout(){
 }
 
 function key_pressed(e){
-    if(e.keyCode==13){
-        log.end_time = parseInt(new Date().getTime()/1000);
+    if(e.keyCode ==13 ){
         send();
+    }
+    else if(e.keyCode == 38){
+        if(user.input_counter > 0){
+            user.input_counter--;
+            ui.inputs.text.value = user.inputs[user.input_counter];       
+        }
+    }
+    else if(e.keyCode == 40){
+        if(user.input_counter < user.inputs.length-1){
+            user.input_counter++;
+            ui.inputs.text.value = user.inputs[user.input_counter];
+        }
+        else{
+            ui.inputs.text.value = "";
+        }
     }
 }
 
 function send(){
     var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
+    user.inputs.push(input);
+    user.input_counter = user.inputs.length;
     var sentence = input.replace(/'/g, "\\'");
     var card;
     if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0){
         card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
-        add_card(input, true);
+        add_card(input, true, null, user.id);
     }
     else{
         card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
@@ -137,7 +148,7 @@ function send(){
                 asked_questions.push(user.questions[i].text);
             }
         }
-        add_card(input, true);
+        add_card(input, true, null, user.id);
         ask_question_based_on_input(sentence);
 
     }
@@ -175,15 +186,15 @@ function ask_question_based_on_input(sentence){
         }
     }
     if(potentials.contested != null){
-        add_card(potentials.contested[0].text, false);
+        add_card(potentials.contested[0].text, false, null, "SHERLOCK");
         asked_questions.push(potentials.contested[0].text);
     }
     else if(potentials.unconfident != null){
-        add_card(potentials.unconfident[0].text, false);
+        add_card(potentials.unconfident[0].text, false, null, "SHERLOCK");
         asked_questions.push(potentials.unconfident[0].text);
     }
     else if(potentials.unanswered != null){
-        add_card(potentials.unanswered[0].text, false);
+        add_card(potentials.unanswered[0].text, false, null, "SHERLOCK");
         asked_questions.push(potentials.unanswered[0].text);
     }
 }
@@ -209,7 +220,7 @@ function update_ui(){
     }
 }
 
-function add_card(card, local, id){
+function add_card(card, local, id, author){
     if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
         shown_cards.push(id);
         navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -221,7 +232,11 @@ function add_card(card, local, id){
                 navigator.vibrate([70,40,200]);
             }
         }
-        c+='"><p>'+card.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
+        c+='">';
+        if(author != null){
+            c+= '<p class="author">'+author+'</p>';
+        }   
+        c+='<p>'+card.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
         c+='</div>';
         ui.info.cards.innerHTML+=c;
         ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
@@ -254,7 +269,7 @@ function check_answers(ins){
             var tos = node.get_instance_relationships(ins[i], "is to");
             for(var j = 0; j < tos.length; j++){
                 if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
-                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name);
+                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name);
                 }
             }
         }
