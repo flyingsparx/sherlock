@@ -2,9 +2,12 @@
 <head>
     <meta name="viewport" content="width=500, user-scalable=0">
     <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>SHERLOCK</title>
-                
-    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    
+    <link rel="apple-touch-icon-precomposed" href="media/ios_icon.png">    
+    <link rel="shortcut icon" href="media/ios_icon.png">
+    <link rel="stylesheet" href="css/main.css" type="text/css"/>
     <link rel="stylesheet" media="(max-width: 800px),handheld" href="css/device.css">
 </head>
 <body>
@@ -14,7 +17,7 @@
            <h1 class="main_title">SHERLOCK</h1> 
         </div>
         <div class="row center">
-            <input class="username clear" id="login_username" placeholder="User ID" />
+            <input class="username clear" id="login_username" placeholder="User ID" type="text"/>
             <div class="clear"></div>
             <p style="display:none;color:rgb(220,220,220);font-weight:300;font-size:15px;" id="login_error">Please enter a User ID to continue.</p>
             <button id="login">Login</button>
@@ -32,13 +35,16 @@
             <div class="column">
                 <input type="text" id="username" placeholder="User ID" readonly/>
             </div>
-            <div class="column center">
-                <p id="score"></p>
-            </div> 
         </div>
         <div class="clear"></div>
         <div class="row" id="cards"></div>
-        <textarea id="text" placeholder="Enter your message..."></textarea>
+        <div style="text-align:right;margin-right:1%;">
+            <input id="autofill" type="checkbox" checked="checked"/><span style="margin-left:5px;">Make input suggestions</span>
+        </div>
+        <div id="text_input_area">
+            <textarea id="text" placeholder="Enter your message..."></textarea>
+            <textarea id="guess" readonly></textarea>
+        </div>
         
         <div class="center row">
             <button id="send">Send message</button>
@@ -53,7 +59,7 @@
     </div>
   </div>
 
-  <script src="http://cestore.sentinelstream.net/cenode.js"></script>  
+  <script src="http://cenode.io/cenode.js"></script>  
   <script src="js/main.js"></script>
   </body> 
 </html>

@@ -50,3 +50,9 @@ input{
     margin:0px 2%;
     font-size:25px;
 }
+#guess{
+    max-width:94%;
+    min-width:94%;
+    margin:0px 2%;
+    font-size:25px;
+}

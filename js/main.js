@@ -9,7 +9,6 @@ var settings = {
 
 var user = {
     id : null,
-    score : 0,
     cards : [],
     questions : [],
     answers : [],
@@ -27,7 +26,9 @@ var ui = {
     inputs : {
         login_user_id : null,
         main_user_id : null,
-        text : null
+        text : null,
+        guess : null,
+        autofill : null
     },
     overlays : {
         login : null,
@@ -36,7 +37,6 @@ var ui = {
     },
     view_changers : [],
     info : {
-        score : null,
         cards : null,
         questions : null,
         login_error : null
@@ -50,10 +50,11 @@ function initialize_ui(){
     ui.inputs.login_user_id = document.getElementById("login_username");
     ui.inputs.main_user_id = document.getElementById("username");
     ui.inputs.text = document.getElementById("text");
+    ui.inputs.guess = document.getElementById("guess");
+    ui.inputs.autofill = document.getElementById("autofill");
     ui.overlays.login = document.getElementById("login_overlay");
     ui.overlays.moira = document.getElementById("moira_overlay");
     ui.overlays.dashboard = document.getElementById("dashboard_overlay");
-    ui.info.score = document.getElementById("score");
     ui.info.cards = document.getElementById("cards");
     ui.info.questions = document.getElementById("questions");
     ui.info.login_error = document.getElementById("login_error");
@@ -64,7 +65,8 @@ function bind_listeners(){
     ui.buttons.login.onclick = login;
     ui.buttons.logout.onclick = logout;
     ui.buttons.send.onclick = send;
-    ui.inputs.text.onkeyup = key_pressed;
+    ui.inputs.text.onkeyup = key_up;
+    ui.inputs.text.onkeydown = key_down;
     for(var i = 0; i < ui.view_changers.length; i++){
 	ui.view_changers[i].onclick = function(e){change_view(e.target.getAttribute("data-view"));};
     }
@@ -82,13 +84,13 @@ function login(){
         return;
     }
 
-    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_NODE);
+    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE);//, MODELS.SHERLOCK_NODE);
     node.set_agent_name(user.id+" agent");
-    node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name()+"' and is to the agent '"+node.get_agent_name()+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name()+"\\'' as content");
+    node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
+    node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
 
     settings.logged_in = true;    
     user.selected_screen = "moira";
-    user.score = 0;
     user.cards = [];
     ui.info.login_error.style.display = "none";
     ui.inputs.main_user_id.value = user.id;
@@ -106,8 +108,31 @@ function logout(){
     node = null;
 }
 
-function key_pressed(e){
-    if(e.keyCode ==13 ){
+function key_down(e){
+    if(e.keyCode == 9){
+        e.preventDefault();
+        return false;
+    }
+    if(e.keyCode == 32){
+        if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
+            if(  navigator.userAgent.match(/Android/i)
+              || navigator.userAgent.match(/webOS/i)
+              || navigator.userAgent.match(/iPhone/i)
+              || navigator.userAgent.match(/iPad/i)
+              || navigator.userAgent.match(/iPod/i)
+              || navigator.userAgent.match(/BlackBerry/i)
+              || navigator.userAgent.match(/Windows Phone/i)
+              ){
+                e.preventDefault();
+                ui.inputs.text.value = node.guess_next(ui.inputs.text.value);
+                return false;
+            }
+        }
+    }
+}
+
+function key_up(e){
+    if(e.keyCode == 13){
         send();
     }
     else if(e.keyCode == 38){
@@ -115,6 +140,7 @@ function key_pressed(e){
             user.input_counter--;
             ui.inputs.text.value = user.inputs[user.input_counter];       
         }
+        e.preventDefault();
     }
     else if(e.keyCode == 40){
         if(user.input_counter < user.inputs.length-1){
@@ -125,20 +151,42 @@ function key_pressed(e){
             ui.inputs.text.value = "";
         }
     }
+    else if(e.keyCode == 9){
+        ui.inputs.text.value = node.guess_next(ui.inputs.text.value);
+        e.preventDefault();
+        return false;
+    }
+    if(ui.inputs.autofill.checked == true){
+        ui.inputs.guess.value = node.guess_next(ui.inputs.text.value);
+    }
+    else{
+        ui.inputs.guess.value = "";
+    }
 }
 
 function send(){
     var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
+    if(input.toLowerCase().indexOf("crowd") > -1){
+        add_card(input, true, null, user.id);
+
+        setTimeout(function(){
+            add_card("OK, "+user.id, false, null, "Local agent");
+            add_card("there is a crowd of people named crowd1 that has '200' as size and was identified by the individual '"+user.id+"'", false, null, "Local agent");
+            add_card("the crowd of people crowd1 is on the street 'Newport Road'", false, null, "Local agent");
+        }, 1000);
+        ui.inputs.text.value = "";
+        return;
+    }
     user.inputs.push(input);
     user.input_counter = user.inputs.length;
     var sentence = input.replace(/'/g, "\\'");
     var card;
     if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0){
-        card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+        card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
         add_card(input, true, null, user.id);
     }
     else{
-        card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name()+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+        card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
         for(var i = 0; i < user.questions.length; i++){
             var q = user.questions[i];
             if(q.relationship == null && sentence.toLowerCase().indexOf(q.value.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
@@ -149,7 +197,9 @@ function send(){
             }
         }
         add_card(input, true, null, user.id);
-        ask_question_based_on_input(sentence);
+        setTimeout(function(){
+            ask_question_based_on_input(sentence);
+        }, 1500);
 
     }
     node.add_sentence(card);
@@ -163,6 +213,20 @@ function send(){
 
     ui.inputs.text.value = "";
     event.preventDefault();
+}
+
+function confirm_card(id, content){
+    document.getElementById("confirm_"+id).style.display = "none";
+    add_card("Confirm.", true, null, user.id);
+    var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    node.add_sentence(card);
+}
+
+function unconfirm_card(id){
+    document.getElementById("confirm_"+id).style.display = "none";
+    document.getElementById("unconfirm_"+id).style.display = "none";
+    add_card("Not confirmed.", true, null, user.id);
+    add_card("OK.", false, null, "Sherlock");
 }
 
 function ask_question_based_on_input(sentence){
@@ -186,15 +250,15 @@ function ask_question_based_on_input(sentence){
         }
     }
     if(potentials.contested != null){
-        add_card(potentials.contested[0].text, false, null, "SHERLOCK");
+        add_card(potentials.contested[0].text, false, null, "Sherlock");
         asked_questions.push(potentials.contested[0].text);
     }
     else if(potentials.unconfident != null){
-        add_card(potentials.unconfident[0].text, false, null, "SHERLOCK");
+        add_card(potentials.unconfident[0].text, false, null, "Sherlock");
         asked_questions.push(potentials.unconfident[0].text);
     }
     else if(potentials.unanswered != null){
-        add_card(potentials.unanswered[0].text, false, null, "SHERLOCK");
+        add_card(potentials.unanswered[0].text, false, null, "Sherlock");
         asked_questions.push(potentials.unanswered[0].text);
     }
 }
@@ -210,7 +274,6 @@ function update_ui(){
             ui.overlays.dashboard.style.display = "block";
             ui.overlays.moira.style.display = "none";
         }
-        ui.info.score.innerHTML = user.score;
     }
     else{
         ui.overlays.login.style.display = "block";
@@ -220,8 +283,11 @@ function update_ui(){
     }
 }
 
-function add_card(card, local, id, author){
+function add_card(content, local, id, author, linked_content, card_type){
     if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
+        if(author == user.id+" agent"){
+            author = "Sherlock";
+        }
         shown_cards.push(id);
         navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
         var c = '<div class="card';
@@ -236,7 +302,17 @@ function add_card(card, local, id, author){
         if(author != null){
             c+= '<p class="author">'+author+'</p>';
         }   
-        c+='<p>'+card.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
+        c+='<p>';
+        if(card_type != null && card_type == "confirm card"){
+            c+='OK. Is this what you meant?<br /><br />';
+        }
+        c+=content.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
+        if(linked_content != null){
+            c+='<img src="'+linked_content+'" alt="Attachment" />';
+        }
+        if(card_type != null && card_type == "confirm card"){
+            c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Confirm</button>';
+        }
         c+='</div>';
         ui.info.cards.innerHTML+=c;
         ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
@@ -269,7 +345,7 @@ function check_answers(ins){
             var tos = node.get_instance_relationships(ins[i], "is to");
             for(var j = 0; j < tos.length; j++){
                 if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
-                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name);
+                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name, node.get_instance_value(ins[i], "linked content"), node.get_instance_type(ins[i]));
                 }
             }
         }
