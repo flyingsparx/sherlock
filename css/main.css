@@ -234,10 +234,27 @@ input#location{
     border:none;
     color:white;
     text-transform:uppercase;
-    display:block;
+    display:inline-block;
     text-align:center;
     margin:10px 2%;
-    width:96%;
+    width:60%;
+    height:40px;
+    border-radius:2px;
+    box-shadow:0px 0px 10px rgb(150,150,150);
+}
+.card .unconfirm{
+    background-color:red;
+    background-image:url('../media/cross_light.png');
+    background-size:20px 20px;
+    background-repeat:no-repeat;
+    background-position:center left;
+    border:none;
+    color:white;
+    text-transform:uppercase;
+    display:inline-block;
+    text-align:center;
+    margin:10px 2%;
+    width:30%;
     height:40px;
     border-radius:2px;
     box-shadow:0px 0px 10px rgb(150,150,150);

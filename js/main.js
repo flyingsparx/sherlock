@@ -2,6 +2,9 @@ var node;
 var shown_cards = [];
 var asked_questions = [];
 var submitted_statements = [];
+var space_pressed = 0;
+var last_space_pressed = 0;
+var forbid_input = false;
 
 var settings = {
     logged_in : false,
@@ -108,30 +111,46 @@ function logout(){
     node = null;
 }
 
+function add_sentence(t){
+    node.add_sentence(t);
+}   
+
 function key_down(e){
+    if(forbid_input){
+        e.preventDefault();
+        return false;
+    }
     if(e.keyCode == 9){
         e.preventDefault();
         return false;
     }
     if(e.keyCode == 32){
-        if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
-            if(  navigator.userAgent.match(/Android/i)
-              || navigator.userAgent.match(/webOS/i)
-              || navigator.userAgent.match(/iPhone/i)
-              || navigator.userAgent.match(/iPad/i)
-              || navigator.userAgent.match(/iPod/i)
-              || navigator.userAgent.match(/BlackBerry/i)
-              || navigator.userAgent.match(/Windows Phone/i)
-              ){
-                e.preventDefault();
-                ui.inputs.text.value = node.guess_next(ui.inputs.text.value);
-                return false;
+        space_pressed = new Date().getTime();
+        if((space_pressed - last_space_pressed) < 200){
+            if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
+                if(  navigator.userAgent.match(/Android/i)
+                  || navigator.userAgent.match(/webOS/i)
+                  || navigator.userAgent.match(/iPhone/i)
+                  || navigator.userAgent.match(/iPad/i)
+                  || navigator.userAgent.match(/iPod/i)
+                  || navigator.userAgent.match(/BlackBerry/i)
+                  || navigator.userAgent.match(/Windows Phone/i)
+                  ){
+                    e.preventDefault();
+                    ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1));
+                    return false;
+                }
             }
         }
+        last_space_pressed = new Date().getTime();
     }
 }
 
 function key_up(e){
+    if(forbid_input){
+        e.preventDefault();
+        return false;
+    }
     if(e.keyCode == 13){
         send();
     }
@@ -186,7 +205,7 @@ function send(){
         add_card(input, true, null, user.id);
     }
     else{
-        card = "there is a tell card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+        card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
         for(var i = 0; i < user.questions.length; i++){
             var q = user.questions[i];
             if(q.relationship == null && sentence.toLowerCase().indexOf(q.value.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
@@ -197,10 +216,7 @@ function send(){
             }
         }
         add_card(input, true, null, user.id);
-        setTimeout(function(){
-            ask_question_based_on_input(sentence);
-        }, 1500);
-
+        
     }
     node.add_sentence(card);
     /*var cards = node.get_instances("tell card");
@@ -217,9 +233,15 @@ function send(){
 
 function confirm_card(id, content){
     document.getElementById("confirm_"+id).style.display = "none";
+    document.getElementById("unconfirm_"+id).style.display = "none";
+
     add_card("Confirm.", true, null, user.id);
     var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
     node.add_sentence(card);
+    forbid_input = false;
+    setTimeout(function(){
+        ask_question_based_on_input(content);
+    }, 1500);
 }
 
 function unconfirm_card(id){
@@ -227,6 +249,7 @@ function unconfirm_card(id){
     document.getElementById("unconfirm_"+id).style.display = "none";
     add_card("Not confirmed.", true, null, user.id);
     add_card("OK.", false, null, "Sherlock");
+    forbid_input = false;
 }
 
 function ask_question_based_on_input(sentence){
@@ -311,7 +334,9 @@ function add_card(content, local, id, author, linked_content, card_type){
             c+='<img src="'+linked_content+'" alt="Attachment" />';
         }
         if(card_type != null && card_type == "confirm card"){
-            c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Confirm</button>';
+            c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Yes</button>';
+            c+='<button id="unconfirm_'+id+'" class="unconfirm" onclick="unconfirm_card(\''+id+'\')">No</button>';
+            forbid_input = true;
         }
         c+='</div>';
         ui.info.cards.innerHTML+=c;
