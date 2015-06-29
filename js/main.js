@@ -94,7 +94,7 @@ function login(){
         return;
     }
 
-    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE);//, MODELS.SHERLOCK_NODE);
+    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_NODE);
     node.set_agent_name(user.id+" agent");
     node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
     node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
