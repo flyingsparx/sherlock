@@ -466,33 +466,48 @@ function poll_for_instances(){
 }
 
 function log_cards(){
-    var cards = node.get_instances("card");
-    var unlogged_cards = [];
-    for(var i = 0; i < cards.length; i++){
-        if(logged_cards.indexOf(cards[i].name) == -1){
-            unlogged_cards.push(cards[i]);
-        }    
-    }
-    if(unlogged_cards.length == 0){
-        setTimeout(function(){
-           log_cards();
-        }, 1000*60); 
-        return;
-    }  
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", URL);
-    xhr.onreadystatechange = function(){
-        if(xhr.readyState == 4){
-            setTimeout(function(){
-                for(var i = 0; i < unlogged_cards.length; i++){
-                    logged_cards.push(unlogged_cards[i].name);
-                }
-                log_cards();
-            }, 1000*60);
+    try{
+        var cards = node.get_instances("card", true);
+        var unlogged_cards = [];
+        for(var i = 0; i < cards.length; i++){
+            if(logged_cards.indexOf(cards[i].name) == -1){
+                unlogged_cards.push(cards[i]);
+            }    
         }
+        console.log(unlogged_cards);
+        if(unlogged_cards.length == 0){
+            setTimeout(function(){
+               log_cards();
+            }, 1000*3); 
+            return;
+        }  
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://sherlock-logger.cenode.io/cards");
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4 && xhr.status == 200){
+                setTimeout(function(){
+                    for(var i = 0; i < unlogged_cards.length; i++){
+                        logged_cards.push(unlogged_cards[i].name);
+                    }
+                    log_cards();
+                }, 1000*3);
+            }
+            else if(xhr.readyState == 4 && xhr.status != 200){
+                setTimeout(function(){
+                    log_cards();
+                }, 1000*3);
+            }
+        }
+        console.log(JSON.stringify(unlogged_cards));
+        xhr.send(JSON.stringify(unlogged_cards));
     }
-    xhr.send(JSON.stringify(unlogged_cards));
+    catch(err){
+        console.log(err);
+        setTimeout(function(){
+            log_cards();
+        }, 1000);
+    }
 }
 
 window.onload = function(){
@@ -500,4 +515,5 @@ window.onload = function(){
     bind_listeners();
     ui.overlays.moira.style.display = "none";
     ui.overlays.dashboard.style.display = "none";
+//    log_cards();
 };
