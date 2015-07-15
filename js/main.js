@@ -2,6 +2,8 @@ var node;
 var shown_cards = [];
 var asked_questions = [];
 var submitted_statements = [];
+var scored_cards = [];
+var logged_cards = [];
 var space_pressed = 0;
 var last_space_pressed = 0;
 var forbid_input = false;
@@ -17,6 +19,7 @@ var user = {
     answers : [],
     inputs: [],
     input_counter : 0,
+    score : 0,
     current_screen : "login"
 };
 
@@ -49,7 +52,8 @@ var ui = {
     info : {
         cards : null,
         questions : null,
-        login_error : null
+        login_error : null,
+        score : null
     }
 };
 
@@ -68,6 +72,7 @@ function initialize_ui(){
     ui.info.cards = document.getElementById("cards");
     ui.info.questions = document.getElementById("questions");
     ui.info.login_error = document.getElementById("login_error");
+    ui.info.score = document.getElementById("score");
     ui.view_changers = document.getElementsByClassName("change_view");
 }
 
@@ -78,7 +83,7 @@ function bind_listeners(){
     ui.inputs.text.onkeyup = key_up;
     ui.inputs.text.onkeydown = key_down;
     for(var i = 0; i < ui.view_changers.length; i++){
-	ui.view_changers[i].onclick = function(e){change_view(e.target.getAttribute("data-view"));};
+	    ui.view_changers[i].onclick = function(e){change_view(e.target.getAttribute("data-view"));};
     }
 }
 
@@ -203,26 +208,27 @@ function key_up(e){
 
 function send(){
     var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
-    if(input.toLowerCase().indexOf("crowd") > -1){
-        add_card(input, true, null, user.id);
-
-        setTimeout(function(){
-            add_card("OK, "+user.id, false, null, "Local agent");
-            add_card("there is a crowd of people named crowd1 that has '200' as size and was identified by the individual '"+user.id+"'", false, null, "Local agent");
-            add_card("the crowd of people crowd1 is on the street 'Newport Road'", false, null, "Local agent");
-        }, 1000);
-        ui.inputs.text.value = "";
-        return;
+    if(input.match(/\band\b/i)){
+        return window.alert("Please only enter single-part sentences.");
     }
+
+    ui.inputs.text.value = "";
     user.inputs.push(input);
     user.input_counter = user.inputs.length;
+
     var sentence = input.replace(/'/g, "\\'");
     var card;
-    if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0){
+    if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
         card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
         add_card(input, true, null, user.id);
     }
     else{
+        if(submitted_statements.indexOf(input.toLowerCase()) > -1 ){
+            add_card("I cannot accept duplicate information from the same user.", false, null, "Sherlock");
+            return window.alert("The input is invalid or you've already entered this information!");
+        }
+        submitted_statements.push(input.toLowerCase());
+
         card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
         for(var i = 0; i < user.questions.length; i++){
             var q = user.questions[i];
@@ -237,21 +243,18 @@ function send(){
         
     }
     node.add_sentence(card);
-    /*var cards = node.get_instances("tell card");
-    for(var i = 0; i < cards.length; i++){
-        var from = node.get_instance_relationship(cards[i], "is from").name;
-        if(from.toLowerCase() == user.id.toLowerCase()){
-            
-        }
-    }*/
-
-    ui.inputs.text.value = "";
-    event.preventDefault();
 }
 
 function confirm_card(id, content){
     document.getElementById("confirm_"+id).style.display = "none";
     document.getElementById("unconfirm_"+id).style.display = "none";
+    forbid_input = false;
+
+    if(submitted_statements.indexOf(content.toLowerCase()) > -1){
+        add_card("I cannot accept duplicate information from the same user.", false, null, "Sherlock");
+        return window.alert("You have already entered or conifirmed this statement.");
+    }
+    submitted_statements.push(content.toLowerCase());
 
     add_card("Yes.", true, null, user.id);
     var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
@@ -260,7 +263,6 @@ function confirm_card(id, content){
     card+=" and has '"+log.start_time+"' as start time";
 
     node.add_sentence(card);
-    forbid_input = false;
     setTimeout(function(){
         ask_question_based_on_input(content);
     }, 1500);
@@ -294,25 +296,30 @@ function ask_question_based_on_input(sentence){
             }       
         }
     }
+    var card = "there is an ask card named 'msg_"+user.id+"_sherlock' that is from the agent 'Sherlock' and is to the individual '"+user.id+"' that has '{now}' as timestamp and has ";
+    var content;
     if(potentials.contested != null){
-        add_card(potentials.contested[0].text, false, null, "Sherlock");
+        content = potentials.contested[0].text;
         asked_questions.push(potentials.contested[0].text);
     }
     else if(potentials.unconfident != null){
-        add_card(potentials.unconfident[0].text, false, null, "Sherlock");
+        content = potentials.unconfident[0].text;
         asked_questions.push(potentials.unconfident[0].text);
     }
     else if(potentials.unanswered != null){
-        add_card(potentials.unanswered[0].text, false, null, "Sherlock");
+        content = potentials.unanswered[0].text;
         asked_questions.push(potentials.unanswered[0].text);
     }
+    card+="'"+content+"' as content.";
+    node.add_sentence(card);
 }
 
 function update_ui(){
     if(settings.logged_in == true){
         ui.overlays.login.style.display = "none";
+        ui.info.score.innerHTML = user.score;
         if(user.selected_screen == "moira"){
-                ui.overlays.moira.style.display = "block"; 
+            ui.overlays.moira.style.display = "block"; 
             ui.overlays.dashboard.style.display = "none";
         }
         else if(user.selected_screen == "dashboard"){
@@ -388,13 +395,24 @@ function check_answers(ins){
     ui.info.questions.innerHTML = "";
     for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
     for(var i = 0; i < ins.length; i++){
-        if(node.get_instance_relationships(ins[i], "is to").length > 0){
+
+        // Detect if type of card. If so, filter and add to UI if necessary
+        if(node.get_instance_type(ins[i]).indexOf("card") > -1){
             var tos = node.get_instance_relationships(ins[i], "is to");
             for(var j = 0; j < tos.length; j++){
                 if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
                     add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name, node.get_instance_value(ins[i], "linked content"), node.get_instance_type(ins[i]));
                 }
             }
+            var from = node.get_instance_relationship(ins[i], "is from");
+            if(from.name.toLowerCase() == user.id.toLowerCase() && node.get_instance_type(ins[i]) == "tell card"){
+                if(scored_cards.indexOf(ins[i].name) == -1){
+                    user.score++;
+                    scored_cards.push(ins[i].name);
+                    update_ui();
+                }
+            }
+            
         }
         else{
             for(var j = 0; j < user.questions.length; j++){
@@ -445,6 +463,36 @@ function poll_for_instances(){
             poll_for_instances();
         }
     },1000);
+}
+
+function log_cards(){
+    var cards = node.get_instances("card");
+    var unlogged_cards = [];
+    for(var i = 0; i < cards.length; i++){
+        if(logged_cards.indexOf(cards[i].name) == -1){
+            unlogged_cards.push(cards[i]);
+        }    
+    }
+    if(unlogged_cards.length == 0){
+        setTimeout(function(){
+           log_cards();
+        }, 1000*60); 
+        return;
+    }  
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", URL);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+            setTimeout(function(){
+                for(var i = 0; i < unlogged_cards.length; i++){
+                    logged_cards.push(unlogged_cards[i].name);
+                }
+                log_cards();
+            }, 1000*60);
+        }
+    }
+    xhr.send(JSON.stringify(unlogged_cards));
 }
 
 window.onload = function(){
