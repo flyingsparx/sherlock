@@ -368,3 +368,16 @@ button:hover{
 .question.unconfident{
     background:orange;
 }
+
+#online_status{
+    display:none;
+}
+.status{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background-color:gray;
+}
+.status.online{
+    background-color:green;
+}

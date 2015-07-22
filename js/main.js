@@ -7,6 +7,8 @@ var logged_cards = [];
 var space_pressed = 0;
 var last_space_pressed = 0;
 var forbid_input = false;
+var multiplayer;
+var last_successful_request = 0;
 
 var settings = {
     logged_in : false,
@@ -41,7 +43,8 @@ var ui = {
         main_user_id : null,
         text : null,
         guess : null,
-        autofill : null
+        autofill : null,
+        multiplayer: null
     },
     overlays : {
         login : null,
@@ -53,7 +56,8 @@ var ui = {
         cards : null,
         questions : null,
         login_error : null,
-        score : null
+        score : null,
+        online_status : null
     }
 };
 
@@ -66,6 +70,7 @@ function initialize_ui(){
     ui.inputs.text = document.getElementById("text");
     ui.inputs.guess = document.getElementById("guess");
     ui.inputs.autofill = document.getElementById("autofill");
+    ui.inputs.multiplayer = document.getElementById("multiplayer");
     ui.overlays.login = document.getElementById("login_overlay");
     ui.overlays.moira = document.getElementById("moira_overlay");
     ui.overlays.dashboard = document.getElementById("dashboard_overlay");
@@ -73,6 +78,7 @@ function initialize_ui(){
     ui.info.questions = document.getElementById("questions");
     ui.info.login_error = document.getElementById("login_error");
     ui.info.score = document.getElementById("score");
+    ui.info.online_status = document.getElementById("online_status");
     ui.view_changers = document.getElementsByClassName("change_view");
 }
 
@@ -94,12 +100,21 @@ function change_view(view){
 
 function login(){
     user.id = ui.inputs.login_user_id.value.charAt(0).toUpperCase() + ui.inputs.login_user_id.value.slice(1);
+    multiplayer = ui.inputs.multiplayer.checked == true;
     if(user.id == null || user.id == ""){
         ui.info.login_error.style.display = "block";
         return;
     }
 
-    node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_NODE);
+    if(multiplayer){
+        node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE, MODELS.SHERLOCK_NODE);
+        ui.info.online_status.style.display = "block";
+        check_online();
+    }
+    else{
+        node = new CENode(MODELS.CORE, MODELS.SHERLOCK_CORE);
+        ui.info.online_status.style.display = "none";
+    }
     node.set_agent_name(user.id+" agent");
     node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
     node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
@@ -116,11 +131,14 @@ function login(){
 }
 
 function logout(){
+    location.reload();
+    /*
     settings.logged_in = false;
     user.id = null;
     user.selected_screen = "login";
     update_ui();
     node = null;
+    */
 }
 
 function add_sentence(t){
@@ -375,7 +393,7 @@ function add_card(content, local, id, author, linked_content, card_type){
 
 function get_question_state(q){
     if(q.responses.length == 0){return "unanswered";}
-    else if(q.responses.length < 3){return "unconfident";}
+    else if(q.responses.length < 2){return "unconfident";}
     else{
         var responses = {};
         var response_vols = [];
@@ -508,6 +526,21 @@ function log_cards(){
             log_cards();
         }, 1000);
     }
+}
+
+function check_online(){
+    var now = new Date().getTime();
+    var last = node.get_agent().get_last_successful_request();
+    var diff = now - last;
+    if(diff < 5000){
+        ui.info.online_status.style.backgroundColor = "green";
+    }
+    else{
+        ui.info.online_status.style.backgroundColor = "gray";
+    }
+    setTimeout(function(){
+        check_online();
+    }, 1000);
 }
 
 window.onload = function(){
