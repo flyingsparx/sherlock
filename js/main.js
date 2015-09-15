@@ -9,6 +9,8 @@ var last_space_pressed = 0;
 var forbid_input = false;
 var multiplayer;
 var last_successful_request = 0;
+var latest_latitude = null;
+var latest_longitude = null;
 
 var SHERLOCK_CORE = [
     "conceptualise a ~ sherlock thing ~ S that is an entity and is an imageable thing",
@@ -125,7 +127,6 @@ var SHERLOCK_CORE = [
 var SHERLOCK_NODE = [
     "there is an agent named 'Mycroft' that has 'http://mycroft.cenode.io' as address",
     "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'Mycroft' as target",
-    "there is an ask policy named 'p3' that has 'true' as enabled and has the agent 'Mycroft' as target",
     "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'Mycroft' as target"    
 ];
 
@@ -248,17 +249,11 @@ function login(){
     update_ui();
     load_questions();//fetch_questions();
     poll_for_instances();
+    log_cards();
 }
 
 function logout(){
     location.reload();
-    /*
-    settings.logged_in = false;
-    user.id = null;
-    user.selected_screen = "login";
-    update_ui();
-    node = null;
-    */
 }
 
 function add_sentence(t){
@@ -395,15 +390,19 @@ function confirm_card(id, content){
     submitted_statements.push(content.toLowerCase());
 
     add_card("Yes.", true, null, user.id);
-    var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp and is in reply to the card '"+id+"'";
     card+=" and has '"+log.keypresses+"' as number of keystrokes";
     card+=" and has '"+log.end_time+"' as submit time";
     card+=" and has '"+log.start_time+"' as start time";
+    if(latest_latitude && latest_longitude){
+      card+=" and has '"+latest_latitude+"' as latitude";
+      card+=" and has '"+latest_longitude+"' as longitude";
+    }
 
     node.add_sentence(card);
-    setTimeout(function(){
+    /*setTimeout(function(){
         ask_question_based_on_input(content);
-    }, 1500);
+    }, 1500);*/
 }
 
 function unconfirm_card(id){
@@ -414,7 +413,7 @@ function unconfirm_card(id){
     forbid_input = false;
 }
 
-function ask_question_based_on_input(sentence){
+/*function ask_question_based_on_input(sentence){
     var ins = node.get_instances("sherlock thing", true);
     var concerns;
     var potentials = {};
@@ -450,7 +449,7 @@ function ask_question_based_on_input(sentence){
     }
     card+="'"+content+"' as content.";
     node.add_sentence(card);
-}
+}*/
 
 function update_ui(){
     if(settings.logged_in == true){
@@ -474,6 +473,7 @@ function update_ui(){
 }
 
 function add_card(content, local, id, author, linked_content, card_type){
+    if(!content){return;}
     if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
         if(author == user.id+" agent"){
             author = "Sherlock";
@@ -612,7 +612,6 @@ function log_cards(){
                 unlogged_cards.push(cards[i]);
             }    
         }
-        console.log(unlogged_cards);
         if(unlogged_cards.length == 0){
             setTimeout(function(){
                log_cards();
@@ -621,7 +620,7 @@ function log_cards(){
         }  
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://sherlock-logger.cenode.io/cards");
+        xhr.open("POST", "http://logger.cenode.io/cards/sherlock");
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 setTimeout(function(){
@@ -637,7 +636,6 @@ function log_cards(){
                 }, 1000*3);
             }
         }
-        console.log(JSON.stringify(unlogged_cards));
         xhr.send(JSON.stringify(unlogged_cards));
     }
     catch(err){
@@ -663,10 +661,17 @@ function check_online(){
     }, 1000);
 }
 
+var record_position = function(position){
+  latest_longitude = position.coords.longitude;
+  latest_latitude = position.coords.latitude;
+}
+
 window.onload = function(){
-    initialize_ui();
-    bind_listeners();
-    ui.overlays.moira.style.display = "none";
-    ui.overlays.dashboard.style.display = "none";
-//    log_cards();
+  initialize_ui();
+  bind_listeners();
+  ui.overlays.moira.style.display = "none";
+  ui.overlays.dashboard.style.display = "none";
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(record_position);
+  }
 };
