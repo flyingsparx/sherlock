@@ -9,7 +9,7 @@ body{
 
 *{
     font-family: 'Helvetica Neue', 'Helvetica', 'Sans-serif';
-    font-weight: 100;
+    font-weight: 200;
 }
 
 #wrapper{
@@ -17,6 +17,13 @@ body{
     height:700px;
     margin:0px auto;
     position:relative;
+}
+
+.attribution{
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  width:70px;
 }
 
 .overlay{
@@ -47,8 +54,6 @@ h1.main_title{
     display:inline-block;
     color:white;
     height:80px;
-    font-height:80px;
-    text-align:middle;
     padding-left:70px;
     letter-spacing:3px;
     background-image:url('../media/ios7-search_light.png');
@@ -57,20 +62,18 @@ h1.main_title{
     background-position:left center;
 }
 
-#login_overlay input{
-    background:white;
-    color:rgb(100,100,100);
-    background-size:20px;
-    background-repeat:no-repeat;
-    background-position:4px center;
+input:focus{
+  outline:none;
+}
+
+#login_overlay input[type="text"]{
+    background:rgba(0,0,0,0.3);
+    color:white;
     margin-bottom:10px;
-    width:150px;
-}
-#login_overlay input.username{
-    background-image:url('../media/person.png');
-}
-#login_overlay input.location{
-    background-image:url('../media/location.png');    
+    width:80%;
+    border:none;
+    border-bottom:2px solid rgb(200,200,200);
+    text-align:center;
 }
 #login{
     border-radius:15px;
@@ -91,7 +94,7 @@ h1.main_title{
 header{
     position:relative;
     width:98%;
-    padding:10px 1%;
+    padding:0px 1%;
     background:rgb(114, 155, 191);
     margin-bottom:10px;
 }
@@ -124,18 +127,32 @@ button.change_view.dashboard{
     background-image:url('../media/grid_light.png');
     float:left;
 }
-button.logout{
-    background-image:url('../media/log-out_light.png');
-    float:right;
+
+#dashboard_indicator{
+  height:10px;
+  width:100%;
+  position:absolute;
+  overflow:hidden;
+  left:0px;
+  bottom:-10px;
 }
-button.settings{
-    background-image:url('../media/gear-a_light.png');
-    float:right;
+#dashboard_indicator div{
+  position:relative;
+  float:left;
+  width:0px;
+  height:10px;
 }
-button.refresh{
-    background-image:url('../media/refresh_light.png');
-    float:right;
-    border:none;
+#dashboard_indicator #unanswered{
+  background:gray;
+}
+#dashboard_indicator #unconfident{
+  background:orange;
+}
+#dashboard_indicator #contested{
+  background:red;
+}
+#dashboard_indicator #answered{
+  background:green;
 }
 
 .row{
@@ -169,7 +186,6 @@ input[type="text"]{
     color:white;
     background:rgb(80,80,80);
     font-weight:300;
-    padding-left:33px;
     background-size:25px 25px;
     background-position:3px center;
     background-repeat:no-repeat;
@@ -178,54 +194,52 @@ input[type="text"]{
 input#username{
     background-image:url('../media/person_light.png');
 }
-input#location{
-    background-image:url('../media/location_light.png');
+
+ul#cards{
+  width:98%;
+  margin:10px 1%;
+  padding:0px;
+  overflow-y:scroll;
 }
 
-#cards{
-    width:96%;
-    padding:5px 2%;
-    background:rgb(114, 155, 191);
-    background:rgb(70,70,70);
-    height:400px;
-    position:relative;
-    clear:both;
-    overflow-y:scroll;
+li.time{
+  list-style:none;
+  display:block;
+  width:100%;
+  clear:both;
+  margin:10px auto;
+  text-align:center;
+  color:rgb(100,100,100);
+  font-size:10px;
 }
 
-.card{
-    background:rgb(230,230,230);
-    width:70%;
-    clear:both;
-    margin:10px 0px;
-    padding:5px;
-    color:rhb(100,100,100);
-    font-weight:300;
-}   
-.card p{
-    margin:0px;
-    font-family:'Courier', 'monospace';
-    word-wrap: break-word;
+li.card{
+  list-style:none;
+  display:inline-block;
+  clear:both;
+  margin:10px 0px;
+  margin-bottom:10px;
+  padding:5px;
+  width:75%;
+  border-radius:10px;
+  background:rgb(230,230,230);
 }
-.card img{
-    display:block;
-    width:96%;
-    margin:5px 2%;
+li.card p{
+  margin:0px;
 }
-.card .author{
-    padding:2px;
-    display:block;
-    background:rgb(0,0,0);
-    color:white;
-    font-size:11px;
+li.card img{
+  display:block;
+  margin:10px auto;
 }
-.card.user{
-    float:right;
+li.card.user{
+  background:#007AFF;
+  color:white;
+  float:right;
 }
-.card.friend{
-    float:left;
+li.card.friend{
+  float:left;
 }
-.card .confirm{
+li.card .confirm{
     background-color:green;
     background-image:url('../media/checkmark_light.png');
     background-size:20px 20px;
@@ -242,7 +256,7 @@ input#location{
     border-radius:2px;
     box-shadow:0px 0px 10px rgb(150,150,150);
 }
-.card .unconfirm{
+li.card .unconfirm{
     background-color:red;
     background-image:url('../media/cross_light.png');
     background-size:20px 20px;
@@ -267,59 +281,26 @@ input#location{
     position:relative;
     margin:10px 1%;
 }
-
-#text{
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
-    top:0px;
-    left:0px;
-    position:absolute;
-    font-size:18px;
-    border:none;
-    padding:4px 1%;
-    border-radius:2px;
-    color:white;
-    background:rgb(80,80,80);
-    font-family:'Courier', 'monospace';
-    opacity:0.6;
-    z-index:10;
+textarea{
+  width:100%;
+  height:80px;
+  max-height:80px;
+  border-radius:4px;
+  padding:5px 2%;
+  border:1px solid #007AFF;
+  resize:none;
+  font-size:15px;
+  position:absolute;
 }
-
-#guess{
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
-    top:0px;
-    left:0px;
-    position:absolute;
-    font-size:18px;
-    border:none;
-    padding:4px 1%;
-    border-radius:2px;
-    color:rgb(200,200,200);
-    background:rgb(80,80,80);
-    font-family:'Courier', 'monospace';
-    z-index:9;
+textarea#text{
+  z-index:10;
+  opacity:0.6;
 }
-
-
-#send{
-    min-width:200px;
-    padding:10px;
-    background:rgb(114, 155, 191);
-    border:none;
-    border-radius:4px;
-    color:white;
-    font-size:20px;
-    padding-left:40px;
-    background-image:url('../media/paper-airplane_light.png');
-    background-size:30px 30px;
-    background-repeat:no-repeat;
-    background-position:5px center;
-    display:none;
+textarea#guess{
+  z-index:9;
+}
+textarea:focus{
+  outline:none;
 }
 
 button{
@@ -328,13 +309,6 @@ button{
 button:hover{
     opacity:0.8;
 }
-
-#score{
-    font-size:50px;
-    color:rgb(114, 155, 191);
-    margin:0px;
-    text-align:right;
-}   
 
 #questions{
     width:96%;
@@ -376,8 +350,7 @@ button:hover{
     width:20px;
     height:20px;
     border-radius:50%;
-    background-color:gray;
-}
-.status.online{
-    background-color:green;
+    float:right;
+    margin-top:15px;
+    margin-right:10px;
 }

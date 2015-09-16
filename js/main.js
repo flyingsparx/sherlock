@@ -13,658 +13,660 @@ var latest_latitude = null;
 var latest_longitude = null;
 
 var SHERLOCK_CORE = [
-    "conceptualise a ~ sherlock thing ~ S that is an entity and is an imageable thing",
-    "conceptualise an ~ organisation ~ O that is a sherlock thing",
-    "conceptualise a ~ fruit ~ F that is a sherlock thing and is a locatable thing",
-    "conceptualise a ~ room ~ R that is a location and is a sherlock thing",
-    "conceptualise a ~ shirt colour ~ C",
-    "conceptualise the shirt colour C ~ is worn by ~ the character C",
-    "conceptualise a ~ sport ~ S",
-    "conceptualise a ~ character ~ C that is a sherlock thing and is a locatable thing and has the shirt colour C as ~ shirt colour ~",
-    "conceptualise the character C ~ works for ~ the organisation O and ~ eats ~ the fruit F and ~ plays ~ the sport S",
-    "conceptualise the room R ~ contains ~ the fruit F and has the character C as ~ contents ~",
-    "conceptualise the fruit F ~ is eaten by ~ the character C",
-    "conceptualise the sport S ~ is played by ~ the character C",
-    "conceptualise a ~ question ~ Q that has the value V as ~ text ~ and has the value W as ~ value ~ and has the value X as ~ relationship ~",
-    "conceptualise the question Q ~ concerns ~ the sherlock thing C",
+  "conceptualise a ~ sherlock thing ~ S that is an entity and is an imageable thing",
+  "conceptualise an ~ organisation ~ O that is a sherlock thing",
+  "conceptualise a ~ fruit ~ F that is a sherlock thing and is a locatable thing",
+  "conceptualise a ~ room ~ R that is a location and is a sherlock thing",
+  "conceptualise a ~ shirt colour ~ C",
+  "conceptualise the shirt colour C ~ is worn by ~ the character C",
+  "conceptualise a ~ sport ~ S",
+  "conceptualise a ~ character ~ C that is a sherlock thing and is a locatable thing and has the shirt colour C as ~ shirt colour ~",
+  "conceptualise the character C ~ works for ~ the organisation O and ~ eats ~ the fruit F and ~ plays ~ the sport S",
+  "conceptualise the room R ~ contains ~ the fruit F and has the character C as ~ contents ~",
+  "conceptualise the fruit F ~ is eaten by ~ the character C",
+  "conceptualise the sport S ~ is played by ~ the character C",
+  "conceptualise a ~ question ~ Q that has the value V as ~ text ~ and has the value W as ~ value ~ and has the value X as ~ relationship ~",
+  "conceptualise the question Q ~ concerns ~ the sherlock thing C",
 
-    "there is a rule named r1 that has 'if the character C ~ eats ~ the fruit F then the fruit F ~ is eaten by ~ the character C' as instruction",
-    "there is a rule named r2 that has 'if the character C ~ plays ~ the sport S then the sport S ~ is played by ~ the character C' as instruction",
-    "there is a rule named r3 that has 'if the character C has the shirt colour S as ~ shirt colour ~ then the shirt colour S ~ is worn by ~ the character C' as instruction",
-    "there is a rule named r4 that has 'if the character C ~ is in ~ the room R then the room R has the character C as ~ contents ~' as instruction",
-    "there is a rule named r5 that has 'if the fruit F ~ is in ~ the room R then the room R ~ contains ~ the fruit F' as instruction",
-    
-    // Inverse rules:
-    "there is a rule named r6 that has 'if the fruit F ~ is eaten by ~ the character C then the character C ~ eats ~ the fruit F' as instruction",
-    "there is a rule named r7 that has 'if the sport S ~ is played by ~ the character C then the character C ~ plays ~ the sport S' as instruction",
-    "there is a rule named r8 that has 'if the shirt colour S ~ is worn by ~ the character C then the character C has the shirt colour S as ~ shirt colour ~' as instruction",
-    "there is a rule named r9 that has 'if the room R has the character C as ~ contents ~ then the character C ~ is in ~ the room R' as instruction",
-    "there is a rule named r10 that has 'if the room R ~ contains ~ the fruit F then the fruit F ~ is in ~ the room R' as instruction",
+  "there is a rule named r1 that has 'if the character C ~ eats ~ the fruit F then the fruit F ~ is eaten by ~ the character C' as instruction",
+  "there is a rule named r2 that has 'if the character C ~ plays ~ the sport S then the sport S ~ is played by ~ the character C' as instruction",
+  "there is a rule named r3 that has 'if the character C has the shirt colour S as ~ shirt colour ~ then the shirt colour S ~ is worn by ~ the character C' as instruction",
+  "there is a rule named r4 that has 'if the character C ~ is in ~ the room R then the room R has the character C as ~ contents ~' as instruction",
+  "there is a rule named r5 that has 'if the fruit F ~ is in ~ the room R then the room R ~ contains ~ the fruit F' as instruction",
+  
+  // Inverse rules:
+  "there is a rule named r6 that has 'if the fruit F ~ is eaten by ~ the character C then the character C ~ eats ~ the fruit F' as instruction",
+  "there is a rule named r7 that has 'if the sport S ~ is played by ~ the character C then the character C ~ plays ~ the sport S' as instruction",
+  "there is a rule named r8 that has 'if the shirt colour S ~ is worn by ~ the character C then the character C has the shirt colour S as ~ shirt colour ~' as instruction",
+  "there is a rule named r9 that has 'if the room R has the character C as ~ contents ~ then the character C ~ is in ~ the room R' as instruction",
+  "there is a rule named r10 that has 'if the room R ~ contains ~ the fruit F then the fruit F ~ is in ~ the room R' as instruction",
 
-    "there is an organisation named 'police'",
-    "there is a character named 'Prof Crane' that has 'http://sherlock.cenode.io/media/plum.jpg' as image",
-    "there is a character named 'Dr Finch' that has 'http://sherlock.cenode.io/media/white.jpg' as image",
-    "there is a character named 'Col Robin' that has 'http://sherlock.cenode.io/media/mustard.jpg' as image",
-    "there is a character named 'Sgt Stork' that has 'http://sherlock.cenode.io/media/peacock.jpg' as image",
-    "there is a character named 'Rev Hawk' that has 'http://sherlock.cenode.io/media/green.jpg' as image",
-    "there is a character named 'Capt Falcon' that has 'http://sherlock.cenode.io/media/scarlet.jpg' as image",
-    "there is a room named 'Ruby Room'",
-    "there is a room named 'Sapphire Room'",
-    "there is a room named 'Gold Room'",
-    "there is a room named 'Amber Room'",
-    "there is a room named 'Emerald Room'",
-    "there is a room named 'Silver Room'",
-    "there is a fruit named 'pineapple'",
-    "there is a fruit named 'apple'",
-    "there is a fruit named 'banana'",
-    "there is a fruit named 'orange'",
-    "there is a fruit named 'lemon'",
-    "there is a fruit named 'pear'",
-    "there is a fruit named 'grape'",
-    "there is a fruit named 'kiwi'",
-    "there is a fruit named 'tomato'",
-    "there is a shirt colour named 'green'",
-    "there is a shirt colour named 'red'",
-    "there is a shirt colour named 'yellow'",
-    "there is a shirt colour named 'black'",
-    "there is a shirt colour named 'white'",
-    "there is a shirt colour named 'purple'",
-    "there is a shirt colour named 'pink'",
-    "there is a shirt colour named 'blue'",
-    "there is a shirt colour named 'brown'",
-    "there is a shirt colour named 'grey'",
-    "there is a sport named 'tennis'",
-    "there is a sport named 'badminton'",
-    "there is a sport named 'rugby'",
-    "there is a sport named 'football'",
-    "there is a sport named 'running'",
-    "there is a sport named 'swimming'",
-    "there is a sport named 'athletic'",
-    "there is a sport named 'baseball'",
-    "there is a sport named 'rounders'",
-    "there is a sport named 'softball'",
-    "there is a sport named 'cricket'",
-    "there is a sport named 'golf'",
+  "there is an organisation named 'police'",
+  "there is a character named 'Prof Crane' that has 'http://sherlock.cenode.io/media/plum.jpg' as image",
+  "there is a character named 'Dr Finch' that has 'http://sherlock.cenode.io/media/white.jpg' as image",
+  "there is a character named 'Col Robin' that has 'http://sherlock.cenode.io/media/mustard.jpg' as image",
+  "there is a character named 'Sgt Stork' that has 'http://sherlock.cenode.io/media/peacock.jpg' as image",
+  "there is a character named 'Rev Hawk' that has 'http://sherlock.cenode.io/media/green.jpg' as image",
+  "there is a character named 'Capt Falcon' that has 'http://sherlock.cenode.io/media/scarlet.jpg' as image",
+  "there is a room named 'Ruby Room'",
+  "there is a room named 'Sapphire Room'",
+  "there is a room named 'Gold Room'",
+  "there is a room named 'Amber Room'",
+  "there is a room named 'Emerald Room'",
+  "there is a room named 'Silver Room'",
+  "there is a fruit named 'pineapple'",
+  "there is a fruit named 'apple'",
+  "there is a fruit named 'banana'",
+  "there is a fruit named 'orange'",
+  "there is a fruit named 'lemon'",
+  "there is a fruit named 'pear'",
+  "there is a fruit named 'grape'",
+  "there is a fruit named 'kiwi'",
+  "there is a fruit named 'tomato'",
+  "there is a shirt colour named 'green'",
+  "there is a shirt colour named 'red'",
+  "there is a shirt colour named 'yellow'",
+  "there is a shirt colour named 'black'",
+  "there is a shirt colour named 'white'",
+  "there is a shirt colour named 'purple'",
+  "there is a shirt colour named 'pink'",
+  "there is a shirt colour named 'blue'",
+  "there is a shirt colour named 'brown'",
+  "there is a shirt colour named 'grey'",
+  "there is a sport named 'tennis'",
+  "there is a sport named 'badminton'",
+  "there is a sport named 'rugby'",
+  "there is a sport named 'football'",
+  "there is a sport named 'running'",
+  "there is a sport named 'swimming'",
+  "there is a sport named 'athletic'",
+  "there is a sport named 'baseball'",
+  "there is a sport named 'rounders'",
+  "there is a sport named 'softball'",
+  "there is a sport named 'cricket'",
+  "there is a sport named 'golf'",
 
-    "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
-    "there is a question named 'q2' that has 'What sport does Dr Finch play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
-    "there is a question named 'q3' that has 'What character eats apples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'apple'",
-    "there is a question named 'q4' that has 'What colour shirt is Prof Crane wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Prof Crane'",
-    "there is a question named 'q6' that has 'Where is Col Robin?' as text and has 'is in' as relationship and concerns the sherlock thing 'Col Robin'",
-    "there is a question named 'q7' that has 'What colour shirt is Sgt Stork wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Sgt Stork'",
-    "there is a question named 'q8' that has 'Where is Sgt Stork?' as text and has 'is in' as relationship and concerns the sherlock thing 'Sgt Stork'",
-    "there is a question named 'q9' that has 'Which character is in the emerald room?' as text and has 'contents' as value and concerns the sherlock thing 'Emerald Room'",
-    "there is a question named 'q12' that has 'What character eats bananas?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'banana'",
-    "there is a question named 'q13' that has 'What character is in the sapphire room?' as text and has 'contents' as value and concerns the sherlock thing 'Sapphire Room'",
-    "there is a question named 'q17' that has 'What sport does Prof Crane play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Prof Crane'",
-    "there is a question named 'q18' that has 'What character is wearing a red shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'red'",
-    "there is a question named 'q19' that has 'What character plays rugby?' as text and has 'is played by' as value and concerns the sherlock thing 'rugby'",
-    "there is a question named 'q20' that has 'What fruit does Rev Hawk eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Rev Hawk'",
-    "there is a question named 'q23' that has 'What fruit does Col Robin eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Col Robin'",
-    "there is a question named 'q24' that has 'Where is the lemon?' as text and has 'is in' as relationship and concerns the sherlock thing 'lemon'",
-    "there is a question named 'q25' that has 'Where is the apple?' as text and has 'is in' as relationship and concerns the sherlock thing 'apple'",
-    "there is a question named 'q26' that has 'What character is wearing a yellow shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'yellow'",
-    "there is a question named 'q28' that has 'What fruit is in the silver room?' as text and has 'contains' as relationship and concerns the sherlock thing 'Silver Room'",
-    "there is a question named 'q30' that has 'What character is wearing a black shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'black'",
-    "there is a question named 'q31' that has 'What character eats lemons?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'lemon'",
-    "there is a question named 'q33' that has 'What fruit does Dr Finch eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Dr Finch'",
-    "there is a question named 'q34' that has 'What character plays baseball?' as text and has 'is played by' as relationship and concerns the sherlock thing 'baseball'",
-    "there is a question named 'q35' that has 'What character plays cricket?' as text and has 'is played by' as relationship and concerns the sherlock thing 'cricket'",
-    "there is a question named 'q36' that has 'What sport does Sgt Stork play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Sgt Stork'",
-    "there is a question named 'q37' that has 'What character is in the ruby room?' as text and has 'contents' as value and concerns the sherlock thing 'Ruby Room'",
-    "there is a question named 'q39' that has 'What character plays golf?' as text and has 'is played by' as relationship and concerns the sherlock thing 'golf'",
-    "there is a question named 'q40' that has 'What character eats oranges?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'orange'",
-    "there is a question named 'q41' that has 'What colour shirt is Capt Falcon wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Capt Falcon'",
-    "there is a question named 'q45' that has 'What character is in the amber room?' as text and has 'contents' as value and concerns the sherlock thing 'Amber Room'",
-    "there is a question named 'q47' that has 'Where is prof plum?' as text and has 'is in' as relationship and concerns the sherlock thing 'Prof Crane'",
-    "there is a question named 'q48' that has 'Where is the pear?' as text and has 'is in' as relationship and concerns the sherlock thing 'pear'",
-    "there is a question named 'q50' that has 'What fruit does Sgt Stork eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Sgt Stork'",
-    "there is a question named 'q52' that has 'What sport does Col Robin play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Col Robin'",
-    "there is a question named 'q53' that has 'Where is Capt Falcon?' as text and has 'is in' as relationship and concerns the sherlock thing 'Capt Falcon'",
-    "there is a question named 'q54' that has 'What sport does Capt Falcon play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Capt Falcon'"
+  "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
+  "there is a question named 'q2' that has 'What sport does Dr Finch play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
+  "there is a question named 'q3' that has 'What character eats apples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'apple'",
+  "there is a question named 'q4' that has 'What colour shirt is Prof Crane wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Prof Crane'",
+  "there is a question named 'q6' that has 'Where is Col Robin?' as text and has 'is in' as relationship and concerns the sherlock thing 'Col Robin'",
+  "there is a question named 'q7' that has 'What colour shirt is Sgt Stork wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Sgt Stork'",
+  "there is a question named 'q8' that has 'Where is Sgt Stork?' as text and has 'is in' as relationship and concerns the sherlock thing 'Sgt Stork'",
+  "there is a question named 'q9' that has 'Which character is in the emerald room?' as text and has 'contents' as value and concerns the sherlock thing 'Emerald Room'",
+  "there is a question named 'q12' that has 'What character eats bananas?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'banana'",
+  "there is a question named 'q13' that has 'What character is in the sapphire room?' as text and has 'contents' as value and concerns the sherlock thing 'Sapphire Room'",
+  "there is a question named 'q17' that has 'What sport does Prof Crane play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Prof Crane'",
+  "there is a question named 'q18' that has 'What character is wearing a red shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'red'",
+  "there is a question named 'q19' that has 'What character plays rugby?' as text and has 'is played by' as value and concerns the sherlock thing 'rugby'",
+  "there is a question named 'q20' that has 'What fruit does Rev Hawk eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Rev Hawk'",
+  "there is a question named 'q23' that has 'What fruit does Col Robin eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Col Robin'",
+  "there is a question named 'q24' that has 'Where is the lemon?' as text and has 'is in' as relationship and concerns the sherlock thing 'lemon'",
+  "there is a question named 'q25' that has 'Where is the apple?' as text and has 'is in' as relationship and concerns the sherlock thing 'apple'",
+  "there is a question named 'q26' that has 'What character is wearing a yellow shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'yellow'",
+  "there is a question named 'q28' that has 'What fruit is in the silver room?' as text and has 'contains' as relationship and concerns the sherlock thing 'Silver Room'",
+  "there is a question named 'q30' that has 'What character is wearing a black shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'black'",
+  "there is a question named 'q31' that has 'What character eats lemons?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'lemon'",
+  "there is a question named 'q33' that has 'What fruit does Dr Finch eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Dr Finch'",
+  "there is a question named 'q34' that has 'What character plays baseball?' as text and has 'is played by' as relationship and concerns the sherlock thing 'baseball'",
+  "there is a question named 'q35' that has 'What character plays cricket?' as text and has 'is played by' as relationship and concerns the sherlock thing 'cricket'",
+  "there is a question named 'q36' that has 'What sport does Sgt Stork play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Sgt Stork'",
+  "there is a question named 'q37' that has 'What character is in the ruby room?' as text and has 'contents' as value and concerns the sherlock thing 'Ruby Room'",
+  "there is a question named 'q39' that has 'What character plays golf?' as text and has 'is played by' as relationship and concerns the sherlock thing 'golf'",
+  "there is a question named 'q40' that has 'What character eats oranges?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'orange'",
+  "there is a question named 'q41' that has 'What colour shirt is Capt Falcon wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Capt Falcon'",
+  "there is a question named 'q45' that has 'What character is in the amber room?' as text and has 'contents' as value and concerns the sherlock thing 'Amber Room'",
+  "there is a question named 'q47' that has 'Where is prof plum?' as text and has 'is in' as relationship and concerns the sherlock thing 'Prof Crane'",
+  "there is a question named 'q48' that has 'Where is the pear?' as text and has 'is in' as relationship and concerns the sherlock thing 'pear'",
+  "there is a question named 'q50' that has 'What fruit does Sgt Stork eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Sgt Stork'",
+  "there is a question named 'q52' that has 'What sport does Col Robin play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Col Robin'",
+  "there is a question named 'q53' that has 'Where is Capt Falcon?' as text and has 'is in' as relationship and concerns the sherlock thing 'Capt Falcon'",
+  "there is a question named 'q54' that has 'What sport does Capt Falcon play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Capt Falcon'"
 ];
 
 var SHERLOCK_NODE = [
-    "there is an agent named 'Mycroft' that has 'http://mycroft.cenode.io' as address",
-    "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'Mycroft' as target",
-    "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'Mycroft' as target"    
+  "there is an agent named 'Mycroft' that has 'http://mycroft.cenode.io' as address",
+  "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'Mycroft' as target",
+  "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'Mycroft' as target"  
 ];
 
 var settings = {
-    logged_in : false,
+  logged_in : false,
 };
 
 var user = {
-    id : null,
-    cards : [],
-    questions : [],
-    answers : [],
-    inputs: [],
-    input_counter : 0,
-    score : 0,
-    current_screen : "login"
+  id : null,
+  cards : [],
+  questions : [],
+  answers : [],
+  inputs: [],
+  input_counter : 0,
+  score : 0,
+  current_screen : "login"
 };
 
 var log = {
-    recording_presses : false,
-    keypresses : 0,
-    start_time : 0,
-    end_time : 0
+  recording_presses : false,
+  keypresses : 0,
+  start_time : 0,
+  end_time : 0
 };
 
 var ui = {
-    buttons : {
-        login : null,
-        logout : null,
-        send : null,
-    },
-    inputs : {
-        login_user_id : null,
-        main_user_id : null,
-        text : null,
-        guess : null,
-        autofill : null,
-        multiplayer: null
-    },
-    overlays : {
-        login : null,
-        moira : null,
-        dashboard: null
-    },
-    view_changers : [],
-    info : {
-        cards : null,
-        questions : null,
-        login_error : null,
-        score : null,
-        online_status : null
-    }
+  buttons : {
+    login : null,
+    logout : null,
+  },
+  inputs : {
+    login_user_id : null,
+    main_user_id : null,
+    text : null,
+    guess : null,
+    autofill : null,
+    multiplayer: null
+  },
+  overlays : {
+    login : null,
+    moira : null,
+    dashboard: null
+  },
+  view_changers : [],
+  info : {
+    cards : null,
+    questions : null,
+    login_error : null,
+    score : null,
+    online_status : null
+  }
 };
 
 function initialize_ui(){
-    ui.buttons.login = document.getElementById("login");
-    ui.buttons.logout = document.getElementById("logout");
-    ui.buttons.send = document.getElementById("send");
-    ui.inputs.login_user_id = document.getElementById("login_username");
-    ui.inputs.main_user_id = document.getElementById("username");
-    ui.inputs.text = document.getElementById("text");
-    ui.inputs.guess = document.getElementById("guess");
-    ui.inputs.autofill = document.getElementById("autofill");
-    ui.inputs.multiplayer = document.getElementById("multiplayer");
-    ui.overlays.login = document.getElementById("login_overlay");
-    ui.overlays.moira = document.getElementById("moira_overlay");
-    ui.overlays.dashboard = document.getElementById("dashboard_overlay");
-    ui.info.cards = document.getElementById("cards");
-    ui.info.questions = document.getElementById("questions");
-    ui.info.login_error = document.getElementById("login_error");
-    ui.info.score = document.getElementById("score");
-    ui.info.online_status = document.getElementById("online_status");
-    ui.view_changers = document.getElementsByClassName("change_view");
+  ui.buttons.login = document.getElementById("login");
+  ui.inputs.login_user_id = document.getElementById("login_username");
+  ui.inputs.main_user_id = document.getElementById("username");
+  ui.inputs.text = document.getElementById("text");
+  ui.inputs.guess = document.getElementById("guess");
+  ui.inputs.autofill = document.getElementById("autofill");
+  ui.inputs.multiplayer = document.getElementById("multiplayer");
+  ui.overlays.login = document.getElementById("login_overlay");
+  ui.overlays.moira = document.getElementById("moira_overlay");
+  ui.overlays.dashboard = document.getElementById("dashboard_overlay");
+  ui.info.cards = document.getElementById("cards");
+  ui.info.questions = document.getElementById("questions");
+  ui.info.login_error = document.getElementById("login_error");
+  ui.info.score = document.getElementById("score");
+  ui.info.online_status = document.getElementById("online_status");
+  ui.view_changers = document.getElementsByClassName("change_view");
 }
 
 function bind_listeners(){
-    ui.buttons.login.onclick = login;
-    ui.buttons.logout.onclick = logout;
-    ui.buttons.send.onclick = send;
-    ui.inputs.text.onkeyup = key_up;
-    ui.inputs.text.onkeydown = key_down;
-    for(var i = 0; i < ui.view_changers.length; i++){
-	    ui.view_changers[i].onclick = function(e){change_view(e.target.getAttribute("data-view"));};
-    }
+  ui.buttons.login.onclick = login;
+  ui.inputs.login_user_id.onkeyup = login;
+  ui.inputs.text.onkeyup = key_up;
+  ui.inputs.text.onkeydown = key_down;
+  for(var i = 0; i < ui.view_changers.length; i++){
+	  ui.view_changers[i].onclick = function(e){change_view(e.target.getAttribute("data-view"));};
+  }
 }
 
 function change_view(view){
-    user.selected_screen = view;
-    update_ui();
+  user.selected_screen = view;
+  update_ui();
 }
 
-function login(){
-    user.id = ui.inputs.login_user_id.value.charAt(0).toUpperCase() + ui.inputs.login_user_id.value.slice(1);
-    user.id = user.id.trim();
-    multiplayer = ui.inputs.multiplayer.checked == true;
-    if(user.id == null || user.id == ""){
-        ui.info.login_error.style.display = "block";
-        return;
+function login(e){
+  if(e && e.keyCode){
+    if(e.keyCode !== 13){
+      return;
     }
+  }
+  user.id = ui.inputs.login_user_id.value.charAt(0).toUpperCase() + ui.inputs.login_user_id.value.slice(1);
+  user.id = user.id.trim();
+  multiplayer = ui.inputs.multiplayer.checked == true;
+  if(user.id == null || user.id == ""){
+    ui.info.login_error.style.display = "block";
+    return;
+  }
 
-    if(multiplayer){
-        node = new CENode(MODELS.CORE, SHERLOCK_CORE, SHERLOCK_NODE);
-        ui.info.online_status.style.display = "block";
-        check_online();
-    }
-    else{
-        node = new CENode(MODELS.CORE, SHERLOCK_CORE);
-        ui.info.online_status.style.display = "none";
-    }
-    node.set_agent_name(user.id+" agent");
-    node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
-    node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
+  if(multiplayer){
+    node = new CENode(MODELS.CORE, SHERLOCK_CORE, SHERLOCK_NODE);
+    ui.info.online_status.style.display = "block";
+    check_online();
+  }
+  else{
+    node = new CENode(MODELS.CORE, SHERLOCK_CORE);
+    ui.info.online_status.style.display = "none";
+  }
+  node.set_agent_name(user.id+" agent");
+  node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
+  node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
 
-    settings.logged_in = true;    
-    user.selected_screen = "moira";
-    user.cards = [];
-    ui.info.login_error.style.display = "none";
-    ui.inputs.main_user_id.value = user.id;
+  settings.logged_in = true;  
+  user.selected_screen = "moira";
+  user.cards = [];
+  ui.info.login_error.style.display = "none";
 
-    update_ui();
-    load_questions();//fetch_questions();
-    poll_for_instances();
-    log_cards();
+  update_ui();
+  load_questions();//fetch_questions();
+  poll_for_instances();
+  log_cards();
 }
 
-function logout(){
-    location.reload();
-}
 
 function add_sentence(t){
-    node.add_sentence(t);
+  node.add_sentence(t);
 }   
 
 function key_down(e){
-    if(forbid_input){
-        e.preventDefault();
-        return false;
-    }
-    if(e.keyCode == 9){
-        e.preventDefault();
-        return false;
-    }
-    if(e.keyCode == 32){
-        space_pressed = new Date().getTime();
-        if((space_pressed - last_space_pressed) < 200){
-            if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
-                if(  navigator.userAgent.match(/Android/i)
-                  || navigator.userAgent.match(/webOS/i)
-                  || navigator.userAgent.match(/iPhone/i)
-                  || navigator.userAgent.match(/iPad/i)
-                  || navigator.userAgent.match(/iPod/i)
-                  || navigator.userAgent.match(/BlackBerry/i)
-                  || navigator.userAgent.match(/Windows Phone/i)
-                  ){
-                    e.preventDefault();
-                    ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1));
-                    return false;
-                }
-            }
+  if(forbid_input){
+    e.preventDefault();
+    return false;
+  }
+  if(e.keyCode == 9){
+    e.preventDefault();
+    return false;
+  }
+  if(e.keyCode == 32){
+    space_pressed = new Date().getTime();
+    if((space_pressed - last_space_pressed) < 200){
+      if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
+        if(  navigator.userAgent.match(/Android/i)
+          || navigator.userAgent.match(/webOS/i)
+          || navigator.userAgent.match(/iPhone/i)
+          || navigator.userAgent.match(/iPad/i)
+          || navigator.userAgent.match(/iPod/i)
+          || navigator.userAgent.match(/BlackBerry/i)
+          || navigator.userAgent.match(/Windows Phone/i)
+          ){
+          e.preventDefault();
+          ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1));
+          return false;
         }
-        last_space_pressed = new Date().getTime();
+      }
     }
+    last_space_pressed = new Date().getTime();
+  }
 }
 
 function key_up(e){
-    if(forbid_input){
-        e.preventDefault();
-        return false;
+  if(forbid_input){
+    e.preventDefault();
+    return false;
+  }
+  if(e.keyCode == 13){
+    log.recording_presses = false;
+    log.end_time = parseInt(new Date().getTime()/1000);
+    send();
+  }
+  else if(e.keyCode == 38){
+    if(user.input_counter > 0){
+      user.input_counter--;
+      ui.inputs.text.value = user.inputs[user.input_counter];     
     }
-    if(e.keyCode == 13){
-        log.recording_presses = false;
-        log.end_time = parseInt(new Date().getTime()/1000);
-        send();
-    }
-    else if(e.keyCode == 38){
-        if(user.input_counter > 0){
-            user.input_counter--;
-            ui.inputs.text.value = user.inputs[user.input_counter];       
-        }
-        e.preventDefault();
-    }
-    else if(e.keyCode == 40){
-        if(user.input_counter < user.inputs.length-1){
-            user.input_counter++;
-            ui.inputs.text.value = user.inputs[user.input_counter];
-        }
-        else{
-            ui.inputs.text.value = "";
-        }
-    }
-    else if(e.keyCode == 9){
-        ui.inputs.text.value = node.guess_next(ui.inputs.text.value);
-        e.preventDefault();
-        return false;
+    e.preventDefault();
+  }
+  else if(e.keyCode == 40){
+    if(user.input_counter < user.inputs.length-1){
+      user.input_counter++;
+      ui.inputs.text.value = user.inputs[user.input_counter];
     }
     else{
-        if(log.recording_presses == false){
-            log.recording_presses = true;
-            log.start_time = parseInt(new Date().getTime()/1000);
-            log.keypresses = 0;
-        }
-        log.keypresses++;
+      ui.inputs.text.value = "";
     }
+  }
+  else if(e.keyCode == 9){
+    ui.inputs.text.value = node.guess_next(ui.inputs.text.value);
+    e.preventDefault();
+    return false;
+  }
+  else{
+    if(log.recording_presses == false){
+      log.recording_presses = true;
+      log.start_time = parseInt(new Date().getTime()/1000);
+      log.keypresses = 0;
+    }
+    log.keypresses++;
+  }
 
-    if(ui.inputs.autofill.checked == true){
-        ui.inputs.guess.value = node.guess_next(ui.inputs.text.value);
-    }
-    else{
-        ui.inputs.guess.value = "";
-    }
+  if(ui.inputs.autofill.checked == true){
+    ui.inputs.guess.value = node.guess_next(ui.inputs.text.value);
+  }
+  else{
+    ui.inputs.guess.value = "";
+  }
 }
 
 function send(){
-    var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
-    if(input.match(/\band\b/i)){
-        return window.alert("Please only enter single-part sentences.");
-    }
+  var input = ui.inputs.text.value.trim().replace(/(\r\n|\n|\r)/gm,"");
 
-    ui.inputs.text.value = "";
-    user.inputs.push(input);
-    user.input_counter = user.inputs.length;
+  ui.inputs.text.value = "";
+  user.inputs.push(input);
+  user.input_counter = user.inputs.length;
 
-    var sentence = input.replace(/'/g, "\\'");
-    var card;
-    if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
-        card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
-        add_card(input, true, null, user.id);
+  var sentence = input.replace(/'/g, "\\'");
+  var card;
+  if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
+    card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    add_card_simple(input, 'user');
+  }
+  else{
+    if(submitted_statements.indexOf(input.toLowerCase()) > -1 ){
+      add_card_simple("I cannot accept duplicate information from the same user.", 'friend');
+      return window.alert("The input is invalid or you've already entered this information!");
     }
-    else{
-        if(submitted_statements.indexOf(input.toLowerCase()) > -1 ){
-            add_card("I cannot accept duplicate information from the same user.", false, null, "Sherlock");
-            return window.alert("The input is invalid or you've already entered this information!");
-        }
-        submitted_statements.push(input.toLowerCase());
+    submitted_statements.push(input.toLowerCase());
 
-        card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
-        for(var i = 0; i < user.questions.length; i++){
-            var q = user.questions[i];
-            if(q.relationship == null && sentence.toLowerCase().indexOf(q.value.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
-                asked_questions.push(user.questions[i].text);
-            }
-            else if(q.value == null && sentence.toLowerCase().indexOf(q.relationship.toLowerCase()) > -1 && sentence.toLowerCase().indexOf(q.concerns.toLowerCase()) > -1){
-                asked_questions.push(user.questions[i].text);
-            }
-        }
-        add_card(input, true, null, user.id);
-        
-    }
-    node.add_sentence(card);
+    card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    add_card_simple(input, 'user');
+  }
+  node.add_sentence(card);
 }
 
 function confirm_card(id, content){
-    document.getElementById("confirm_"+id).style.display = "none";
-    document.getElementById("unconfirm_"+id).style.display = "none";
-    forbid_input = false;
+  document.getElementById("confirm_"+id).style.display = "none";
+  document.getElementById("unconfirm_"+id).style.display = "none";
+  forbid_input = false;
 
-    if(submitted_statements.indexOf(content.toLowerCase()) > -1){
-        add_card("I cannot accept duplicate information from the same user.", false, null, "Sherlock");
-        return window.alert("You have already entered or conifirmed this statement.");
-    }
-    submitted_statements.push(content.toLowerCase());
+  if(submitted_statements.indexOf(content.toLowerCase()) > -1){
+    add_card_simple("I cannot accept duplicate information from the same user.", 'friend');
+    return window.alert("You have already entered or conifirmed this statement.");
+  }
+  submitted_statements.push(content.toLowerCase());
 
-    add_card("Yes.", true, null, user.id);
-    var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp and is in reply to the card '"+id+"'";
-    card+=" and has '"+log.keypresses+"' as number of keystrokes";
-    card+=" and has '"+log.end_time+"' as submit time";
-    card+=" and has '"+log.start_time+"' as start time";
-    if(latest_latitude && latest_longitude){
-      card+=" and has '"+latest_latitude+"' as latitude";
-      card+=" and has '"+latest_longitude+"' as longitude";
-    }
+  add_card_simple("Yes.", 'user');
+  var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp and is in reply to the card '"+id+"'";
+  card+=" and has '"+log.keypresses+"' as number of keystrokes";
+  card+=" and has '"+log.end_time+"' as submit time";
+  card+=" and has '"+log.start_time+"' as start time";
+  if(latest_latitude && latest_longitude){
+    card+=" and has '"+latest_latitude+"' as latitude";
+    card+=" and has '"+latest_longitude+"' as longitude";
+  }
 
-    node.add_sentence(card);
-    /*setTimeout(function(){
-        ask_question_based_on_input(content);
-    }, 1500);*/
+  node.add_sentence(card);
+  /*setTimeout(function(){
+    ask_question_based_on_input(content);
+  }, 1500);*/
 }
 
 function unconfirm_card(id){
-    document.getElementById("confirm_"+id).style.display = "none";
-    document.getElementById("unconfirm_"+id).style.display = "none";
-    add_card("No.", true, null, user.id);
-    add_card("OK.", false, null, "Sherlock");
-    forbid_input = false;
+  document.getElementById("confirm_"+id).style.display = "none";
+  document.getElementById("unconfirm_"+id).style.display = "none";
+  add_card_simple("No.", 'user');
+  add_card_simple("OK.", 'friend');
+  forbid_input = false;
 }
 
 /*function ask_question_based_on_input(sentence){
-    var ins = node.get_instances("sherlock thing", true);
-    var concerns;
-    var potentials = {};
-    for(var i = 0; i < ins.length; i++){
-        if(sentence.toLowerCase().indexOf(ins[i].name.toLowerCase()) > -1){
-            concerns = ins[i];
-            break
-        }
+  var ins = node.get_instances("sherlock thing", true);
+  var concerns;
+  var potentials = {};
+  for(var i = 0; i < ins.length; i++){
+    if(sentence.toLowerCase().indexOf(ins[i].name.toLowerCase()) > -1){
+      concerns = ins[i];
+      break
     }
-    if(concerns == null){return;}
-    for(var i  = 0; i < user.questions.length; i++){
-        if(user.questions[i].concerns == concerns.name){
-            var state = get_question_state(user.questions[i]);
-            if(state != "answered" && asked_questions.indexOf(user.questions[i].text) == -1){
-                if(potentials[state] == null){potentials[state] = [];}
-                potentials[state].push(user.questions[i]);       
-            }       
-        }
+  }
+  if(concerns == null){return;}
+  for(var i  = 0; i < user.questions.length; i++){
+    if(user.questions[i].concerns == concerns.name){
+      var state = get_question_state(user.questions[i]);
+      if(state != "answered" && asked_questions.indexOf(user.questions[i].text) == -1){
+        if(potentials[state] == null){potentials[state] = [];}
+        potentials[state].push(user.questions[i]);     
+      }     
     }
-    var card = "there is an ask card named 'msg_"+user.id+"_sherlock' that is from the agent 'Sherlock' and is to the individual '"+user.id+"' that has '{now}' as timestamp and has ";
-    var content;
-    if(potentials.contested != null){
-        content = potentials.contested[0].text;
-        asked_questions.push(potentials.contested[0].text);
-    }
-    else if(potentials.unconfident != null){
-        content = potentials.unconfident[0].text;
-        asked_questions.push(potentials.unconfident[0].text);
-    }
-    else if(potentials.unanswered != null){
-        content = potentials.unanswered[0].text;
-        asked_questions.push(potentials.unanswered[0].text);
-    }
-    card+="'"+content+"' as content.";
-    node.add_sentence(card);
+  }
+  var card = "there is an ask card named 'msg_"+user.id+"_sherlock' that is from the agent 'Sherlock' and is to the individual '"+user.id+"' that has '{now}' as timestamp and has ";
+  var content;
+  if(potentials.contested != null){
+    content = potentials.contested[0].text;
+    asked_questions.push(potentials.contested[0].text);
+  }
+  else if(potentials.unconfident != null){
+    content = potentials.unconfident[0].text;
+    asked_questions.push(potentials.unconfident[0].text);
+  }
+  else if(potentials.unanswered != null){
+    content = potentials.unanswered[0].text;
+    asked_questions.push(potentials.unanswered[0].text);
+  }
+  card+="'"+content+"' as content.";
+  node.add_sentence(card);
 }*/
 
 function update_ui(){
-    if(settings.logged_in == true){
-        ui.overlays.login.style.display = "none";
-        ui.info.score.innerHTML = user.score;
-        if(user.selected_screen == "moira"){
-            ui.overlays.moira.style.display = "block"; 
-            ui.overlays.dashboard.style.display = "none";
-        }
-        else if(user.selected_screen == "dashboard"){
-            ui.overlays.dashboard.style.display = "block";
-            ui.overlays.moira.style.display = "none";
-        }
+  if(settings.logged_in == true){
+    ui.overlays.login.style.display = "none";
+    ui.info.score.innerHTML = user.score+' points';
+    if(user.selected_screen == "moira"){
+      ui.overlays.moira.style.display = "block"; 
+      ui.overlays.dashboard.style.display = "none";
     }
-    else{
-        ui.overlays.login.style.display = "block";
-        ui.overlays.moira.style.display = "none"; 
-        ui.inputs.login_user_id.value = "";
-        ui.info.cards.innerHTML = "";
+    else if(user.selected_screen == "dashboard"){
+      ui.overlays.dashboard.style.display = "block";
+      ui.overlays.moira.style.display = "none";
     }
+  }
+  else{
+    ui.overlays.login.style.display = "block";
+    ui.overlays.moira.style.display = "none"; 
+    ui.inputs.login_user_id.value = "";
+    ui.info.cards.innerHTML = "";
+  }
 }
 
-function add_card(content, local, id, author, linked_content, card_type){
-    if(!content){return;}
-    if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
-        if(author == user.id+" agent"){
-            author = "Sherlock";
-        }
-        shown_cards.push(id);
-        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-        var c = '<div class="card';
-        if(local){c+=' user';}
-        else{
-            c+=' friend';
-            if(navigator.vibrate){
-                navigator.vibrate([70,40,200]);
-            }
-        }
-        c+='">';
-        if(author != null){
-            c+= '<p class="author">'+author+'</p>';
-        }   
-        c+='<p>';
-        if(card_type != null && card_type == "confirm card"){
-            c+='OK. Is this what you meant?<br /><br />';
-        }
-        c+=content.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
-        if(linked_content != null){
-            c+='<img src="'+linked_content+'" alt="Attachment" />';
-        }
-        if(card_type != null && card_type == "confirm card"){
-            c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Yes</button>';
-            c+='<button id="unconfirm_'+id+'" class="unconfirm" onclick="unconfirm_card(\''+id+'\')">No</button>';
-            forbid_input = true;
-        }
-        c+='</div>';
-        ui.info.cards.innerHTML+=c;
-        ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
+function add_card_simple(text, user){
+  ui.info.cards.innerHTML += '<li class="card '+user+'"><p>'+text+'</p></li>';
+  ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
+}
+
+function add_card(card){
+  var content = node.get_instance_value(card, 'content');
+  var id = card.name;
+  var tos = node.get_instance_relationships(card, 'is to').map(function(to){
+    return to.name.toLowerCase();
+  });
+  var from = node.get_instance_relationship(card, 'is from').name;
+  var card_type = node.get_instance_type(card);
+  var linked_content = node.get_instance_value(card, 'linked content');
+  
+  if(!content){return;}
+  if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
+    shown_cards.push(id);
+    navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+    var c = '<li class="card';
+    if(tos.indexOf(user.id) > -1){c+=' user';}
+    else{
+      c+=' friend';
+      if(navigator.vibrate){
+        navigator.vibrate([70,40,200]);
+      }
     }
+    c+='">';
+    c+='<p>';
+    if(card_type != null && card_type == "confirm card"){
+      c+='OK. Is this what you meant?<br /><br />';
+    }
+    c+=content.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
+    if(card_type != null && card_type == "confirm card"){
+      c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Yes</button>';
+      c+='<button id="unconfirm_'+id+'" class="unconfirm" onclick="unconfirm_card(\''+id+'\')">No</button>';
+      forbid_input = true;
+    }
+    if(linked_content != null){
+      c+='<img src="'+linked_content+'" alt="Attachment" />';
+    }
+    c+='</li>';
+    ui.info.cards.innerHTML+=c;
+    ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
+  }
 }
 
 function get_question_state(q){
-    if(q.responses.length == 0){return "unanswered";}
-    else if(q.responses.length < 2){return "unconfident";}
-    else{
-        var responses = {};
-        var response_vols = [];
-        for(var j = 0; j < q.responses.length; j++){
-            if(!(q.responses[j] in responses)){responses[q.responses[j]] = 0;}
-            responses[q.responses[j]]++;
-        }
-        for(key in responses){response_vols.push(responses[key]);}
-        response_vols.sort().reverse();
-        if(response_vols.length == 1){return "answered";}
-        else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){return "answered";}
-        else{return "contested";}
+  if(q.responses.length == 0){return "unanswered";}
+  else if(q.responses.length < 2){return "unconfident";}
+  else{
+    var responses = {};
+    var response_vols = [];
+    for(var j = 0; j < q.responses.length; j++){
+      if(!(q.responses[j] in responses)){responses[q.responses[j]] = 0;}
+      responses[q.responses[j]]++;
     }
-}
-
-function check_answers(ins){
-    ui.info.questions.innerHTML = "";
-    for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
-    for(var i = 0; i < ins.length; i++){
-
-        // Detect if type of card. If so, filter and add to UI if necessary
-        if(node.get_instance_type(ins[i]).indexOf("card") > -1){
-            var tos = node.get_instance_relationships(ins[i], "is to");
-            for(var j = 0; j < tos.length; j++){
-                if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
-                    add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name, node.get_instance_value(ins[i], "linked content"), node.get_instance_type(ins[i]));
-                }
-            }
-            var from = node.get_instance_relationship(ins[i], "is from");
-            if(from.name.toLowerCase() == user.id.toLowerCase() && node.get_instance_type(ins[i]) == "tell card"){
-                if(scored_cards.indexOf(ins[i].name) == -1){
-                    user.score++;
-                    scored_cards.push(ins[i].name);
-                    update_ui();
-                }
-            }
-            
-        }
-        else{
-            for(var j = 0; j < user.questions.length; j++){
-                var instance = ins[i];
-                var question = user.questions[j];
-                if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
-                    if(question.value != null){
-                        for(var k = 0; k < instance.values.length; k++){
-                            if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
-                        }
-                    }
-                    if(question.relationship != null){
-                        for(var k = 0; k < instance.relationships.length; k++){
-                            if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
-                        }
-                    }
-                }
-            }
-        }
-    }
-    for(var i = 0; i < user.questions.length ; i++){
-        ui.info.questions.innerHTML += '<li onclick="alert(\''+user.questions[i].text+'\');" class="response question '+get_question_state(user.questions[i])+'">'+(i+1)+'</li>';
-    }
+    for(key in responses){response_vols.push(responses[key]);}
+    response_vols.sort().reverse();
+    if(response_vols.length == 1){return "answered";}
+    else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){return "answered";}
+    else{return "contested";}
+  }
 }
 
 function load_questions(){
-    var qs = node.get_instances("question");
-    for(var i = 0; i < qs.length; i++){
-        var q = {};
-        q.responses = [];
-        for(var j = 0; j < qs[i].values.length; j++){
-            q[qs[i].values[j].descriptor] = qs[i].values[j].type_name;
-        }
-        for(var j = 0; j < qs[i].relationships.length; j++){
-            q[qs[i].relationships[j].label] = qs[i].relationships[j].target_name;
-        }
-        user.questions.push(q);
+  var qs = node.get_instances("question");
+  for(var i = 0; i < qs.length; i++){
+    var q = {};
+    q.responses = [];
+    for(var j = 0; j < qs[i].values.length; j++){
+      q[qs[i].values[j].descriptor] = qs[i].values[j].type_name;
     }
+    for(var j = 0; j < qs[i].relationships.length; j++){
+      q[qs[i].relationships[j].label] = qs[i].relationships[j].target_name;
+    }
+    user.questions.push(q);
+  }
 }
 
 function poll_for_instances(){
-    if(node == null){
-        return;
-    }
-    setTimeout(function(){
-        if(node != null){
-            check_answers(node.get_instances());
-            poll_for_instances();
+  if(node == null){
+    return;
+  }
+  setTimeout(function(){
+    var ins = node.get_instances();
+    ui.info.questions.innerHTML = "";
+    for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
+    for(var i = 0; i < ins.length; i++){
+      // Detect if type of card. If so, filter and add to UI if necessary
+      if(node.get_instance_type(ins[i]).indexOf("card") > -1){
+        var tos = node.get_instance_relationships(ins[i], "is to");
+        for(var j = 0; j < tos.length; j++){
+          if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
+            add_card(ins[i]);
+            //add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name, node.get_instance_value(ins[i], "linked content"), node.get_instance_type(ins[i]));
+          }
         }
-    },1000);
+      }
+      else{
+        for(var j = 0; j < user.questions.length; j++){
+          var instance = ins[i];
+          var question = user.questions[j];
+          if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
+            if(question.value != null){
+              for(var k = 0; k < instance.values.length; k++){
+                if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
+              }
+            }
+            if(question.relationship != null){
+              for(var k = 0; k < instance.relationships.length; k++){
+                if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
+              }
+            }
+          }
+        }
+      }
+    }
+    user.score = 0;
+    var ratios = {};
+    for(var i = 0; i < user.questions.length ; i++){
+      var state = get_question_state(user.questions[i]);
+      ui.info.questions.innerHTML += '<li onclick="alert(\''+user.questions[i].text+'\');" class="response question '+state+'">'+(i+1)+'</li>';
+      if(state == 'answered'){
+        user.score++;
+      }
+      if(!(state in ratios)){
+        ratios[state] = 0;
+      }
+      ratios[state]++;
+    }
+    for(var type in ratios){
+      document.getElementById(type).style.width = ratios[type] * 100 / parseFloat(user.questions.length)+'%';
+    }
+    update_ui();
+    poll_for_instances();
+  },1000);
 }
 
 function log_cards(){
-    try{
-        var cards = node.get_instances("card", true);
-        var unlogged_cards = [];
-        for(var i = 0; i < cards.length; i++){
-            if(logged_cards.indexOf(cards[i].name) == -1){
-                unlogged_cards.push(cards[i]);
-            }    
-        }
-        if(unlogged_cards.length == 0){
-            setTimeout(function(){
-               log_cards();
-            }, 1000*3); 
-            return;
-        }  
+  try{
+    var cards = node.get_instances("card", true);
+    var unlogged_cards = [];
+    for(var i = 0; i < cards.length; i++){
+      if(logged_cards.indexOf(cards[i].name) == -1){
+        unlogged_cards.push(cards[i]);
+      }  
+    }
+    if(unlogged_cards.length == 0){
+      setTimeout(function(){
+         log_cards();
+      }, 1000*3); 
+      return;
+    }  
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://logger.cenode.io/cards/sherlock");
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4 && xhr.status == 200){
-                setTimeout(function(){
-                    for(var i = 0; i < unlogged_cards.length; i++){
-                        logged_cards.push(unlogged_cards[i].name);
-                    }
-                    log_cards();
-                }, 1000*3);
-            }
-            else if(xhr.readyState == 4 && xhr.status != 200){
-                setTimeout(function(){
-                    log_cards();
-                }, 1000*3);
-            }
-        }
-        xhr.send(JSON.stringify(unlogged_cards));
-    }
-    catch(err){
-        console.log(err);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://logger.cenode.io/cards/sherlock");
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState == 4 && xhr.status == 200){
         setTimeout(function(){
-            log_cards();
-        }, 1000);
+          for(var i = 0; i < unlogged_cards.length; i++){
+            logged_cards.push(unlogged_cards[i].name);
+          }
+          log_cards();
+        }, 1000*3);
+      }
+      else if(xhr.readyState == 4 && xhr.status != 200){
+        setTimeout(function(){
+          log_cards();
+        }, 1000*3);
+      }
     }
+    xhr.send(JSON.stringify(unlogged_cards));
+  }
+  catch(err){
+    console.log(err);
+    setTimeout(function(){
+      log_cards();
+    }, 1000);
+  }
 }
 
 function check_online(){
-    var now = new Date().getTime();
-    var last = node.get_agent().get_last_successful_request();
-    var diff = now - last;
-    if(diff < 5000){
-        ui.info.online_status.style.backgroundColor = "green";
-    }
-    else{
-        ui.info.online_status.style.backgroundColor = "gray";
-    }
-    setTimeout(function(){
-        check_online();
-    }, 1000);
+  var now = new Date().getTime();
+  var last = node.get_agent().get_last_successful_request();
+  var diff = now - last;
+  if(diff < 5000){
+    ui.info.online_status.style.backgroundColor = "green";
+  }
+  else{
+    ui.info.online_status.style.backgroundColor = "rgb(200,200,200)";
+  }
+  setTimeout(function(){
+    check_online();
+  }, 1000);
 }
 
 var record_position = function(position){
   latest_longitude = position.coords.longitude;
   latest_latitude = position.coords.latitude;
 }
+
+window.onresize = function(event) {
+  ui.info.cards.style.height = (window.innerHeight - 200)+'px'; 
+  ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
+  document.getElementById('wrapper').style.height = window.innerHeight+'px';
+}
+
+window.onbeforeunload = function() { 
+  return "Quitting Sherlock may mean you can't resume from where you left off."; 
+};
 
 window.onload = function(){
   initialize_ui();
@@ -674,4 +676,7 @@ window.onload = function(){
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(record_position);
   }
+  ui.inputs.text.focus();
+  ui.info.cards.style.height = (window.innerHeight - 200)+'px'; 
+  document.getElementById('wrapper').style.height = window.innerHeight+'px';
 };

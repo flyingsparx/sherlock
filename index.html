@@ -17,47 +17,41 @@
            <h1 class="main_title">SHERLOCK</h1> 
         </div>
         <div class="row center">
-            <input class="username clear" id="login_username" placeholder="User ID" type="text"/>
+            <input class="username clear" id="login_username" placeholder="User ID" type="text" autofocus>
             <div class="clear"></div>
             <p style="display:none;color:rgb(220,220,220);font-weight:300;font-size:15px;" id="login_error">Please enter a User ID to continue.</p>
             <input id="multiplayer" type="checkbox" checked="checked" style="width:20px;"/><span style="margin-left:5px;color:white;">Multiplayer</span>
             <div class="clear"></div>
             <button id="login">Login</button>
         </div>  
-
+        <img src="/media/logo.jpg" class="attribution">
     </div>
     <div class="overlay" id="moira_overlay">
         <header>
-	    <button class="change_view dashboard" data-view="dashboard">Dashboard</button> 
-            <button class="logout" id="logout">Logout</button>
+            <div id="dashboard_indicator">
+              <div id="answered"></div>
+              <div id="unconfident"></div>
+              <div id="contested"></div>
+              <div id="unanswered"></div>
+            </div>
+            <button class="change_view dashboard" data-view="dashboard" id="score">Dashboard</button> 
+            <!--<button class="logout" id="logout">Logout</button>-->
+            <div id="online_status" class="status"></div>
+
             <div class="clear"></div>
         </header>
-
-        <div class="row">
-            <div class="column">
-                <input type="text" id="username" placeholder="User ID" readonly/>
-            </div>
-            <div class="column">
-                <p id="score"></p>
-            </div>
-        </div>
-        <div class="clear"></div>
-        <div class="row" id="cards"></div>
+        <ul id="cards"><div id="score"></div></ul>
         <div style="height:20px;">
             <div style="text-align:right;margin-right:1%;display:inline-block;float:right;">
                 <input id="autofill" type="checkbox" checked="checked"/><span style="margin-left:5px;">Input suggestions</span>
             </div>
             <div style="text-align:left;margin-left:1%;display:inline-block;float:left;">
-                <div id="online_status" class="status"></div>
+            <!--    <div id="online_status" class="status"></div>-->
             </div>
         </div>
         <div id="text_input_area">
             <textarea id="text" placeholder="Enter your message..."></textarea>
             <textarea id="guess" readonly></textarea>
-        </div>
-        
-        <div class="center row">
-            <button id="send">Send message</button>
         </div>
     </div>
     <div class="overlay" id="dashboard_overlay">
