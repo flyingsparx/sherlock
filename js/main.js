@@ -42,12 +42,12 @@ var SHERLOCK_CORE = [
   "there is a rule named r10 that has 'if the room R ~ contains ~ the fruit F then the fruit F ~ is in ~ the room R' as instruction",
 
   "there is an organisation named 'police'",
-  "there is a character named 'Prof Crane' that has 'http://sherlock.cenode.io/media/plum.jpg' as image",
-  "there is a character named 'Dr Finch' that has 'http://sherlock.cenode.io/media/white.jpg' as image",
-  "there is a character named 'Col Robin' that has 'http://sherlock.cenode.io/media/mustard.jpg' as image",
-  "there is a character named 'Sgt Stork' that has 'http://sherlock.cenode.io/media/peacock.jpg' as image",
-  "there is a character named 'Rev Hawk' that has 'http://sherlock.cenode.io/media/green.jpg' as image",
-  "there is a character named 'Capt Falcon' that has 'http://sherlock.cenode.io/media/scarlet.jpg' as image",
+  "there is a character named 'Prof Crane' that has 'http://sherlock.cenode.io/media/crane.png' as image",
+  "there is a character named 'Dr Finch' that has 'http://sherlock.cenode.io/media/finch.png' as image",
+  "there is a character named 'Col Robin' that has 'http://sherlock.cenode.io/media/robin.png' as image",
+  "there is a character named 'Sgt Stork' that has 'http://sherlock.cenode.io/media/stork.png' as image",
+  "there is a character named 'Rev Hawk' that has 'http://sherlock.cenode.io/media/hawk.png' as image",
+  "there is a character named 'Capt Falcon' that has 'http://sherlock.cenode.io/media/falcon.png' as image",
   "there is a room named 'Ruby Room'",
   "there is a room named 'Sapphire Room'",
   "there is a room named 'Gold Room'",
@@ -295,7 +295,7 @@ function key_up(e){
   }
   if(e.keyCode == 13){
     log.recording_presses = false;
-    log.end_time = parseInt(new Date().getTime()/1000);
+    log.end_time = parseInt(new Date().getTime());
     send();
   }
   else if(e.keyCode == 38){
@@ -322,7 +322,7 @@ function key_up(e){
   else{
     if(log.recording_presses == false){
       log.recording_presses = true;
-      log.start_time = parseInt(new Date().getTime()/1000);
+      log.start_time = parseInt(new Date().getTime());
       log.keypresses = 0;
     }
     log.keypresses++;

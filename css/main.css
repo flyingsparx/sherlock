@@ -96,7 +96,7 @@ header{
     width:98%;
     padding:0px 1%;
     background:rgb(114, 155, 191);
-    margin-bottom:10px;
+    margin-bottom:20px;
 }
 header p{
     color:white;
@@ -129,18 +129,18 @@ button.change_view.dashboard{
 }
 
 #dashboard_indicator{
-  height:10px;
+  height:20px;
   width:100%;
   position:absolute;
   overflow:hidden;
   left:0px;
-  bottom:-10px;
+  bottom:-20px;
 }
 #dashboard_indicator div{
   position:relative;
   float:left;
   width:0px;
-  height:10px;
+  height:20px;
 }
 #dashboard_indicator #unanswered{
   background:gray;
@@ -226,6 +226,8 @@ li.card{
 }
 li.card p{
   margin:0px;
+  font-size:130%;
+  word-break:break-word;
 }
 li.card img{
   display:block;
