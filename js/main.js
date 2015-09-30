@@ -117,7 +117,7 @@ var SHERLOCK_CORE = [
   "there is a question named 'q40' that has 'What character eats oranges?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'orange'",
   "there is a question named 'q41' that has 'What colour shirt is Capt Falcon wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Capt Falcon'",
   "there is a question named 'q45' that has 'What character is in the amber room?' as text and has 'contents' as value and concerns the sherlock thing 'Amber Room'",
-  "there is a question named 'q47' that has 'Where is prof plum?' as text and has 'is in' as relationship and concerns the sherlock thing 'Prof Crane'",
+  "there is a question named 'q47' that has 'Where is Prof Crane?' as text and has 'is in' as relationship and concerns the sherlock thing 'Prof Crane'",
   "there is a question named 'q48' that has 'Where is the pear?' as text and has 'is in' as relationship and concerns the sherlock thing 'pear'",
   "there is a question named 'q50' that has 'What fruit does Sgt Stork eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Sgt Stork'",
   "there is a question named 'q52' that has 'What sport does Col Robin play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Col Robin'",
