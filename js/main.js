@@ -271,18 +271,9 @@ function key_down(e){
     space_pressed = new Date().getTime();
     if((space_pressed - last_space_pressed) < 200){
       if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
-        if(  navigator.userAgent.match(/Android/i)
-          || navigator.userAgent.match(/webOS/i)
-          || navigator.userAgent.match(/iPhone/i)
-          || navigator.userAgent.match(/iPad/i)
-          || navigator.userAgent.match(/iPod/i)
-          || navigator.userAgent.match(/BlackBerry/i)
-          || navigator.userAgent.match(/Windows Phone/i)
-          ){
           e.preventDefault();
-          ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1));
+          ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1)) + " ";
           return false;
-        }
       }
     }
     last_space_pressed = new Date().getTime();

@@ -260,10 +260,6 @@ li.card .confirm{
 }
 li.card .unconfirm{
     background-color:red;
-    background-image:url('../media/cross_light.png');
-    background-size:20px 20px;
-    background-repeat:no-repeat;
-    background-position:center left;
     border:none;
     color:white;
     text-transform:uppercase;
