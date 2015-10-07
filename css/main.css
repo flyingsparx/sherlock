@@ -135,6 +135,7 @@ button.change_view.dashboard{
   overflow:hidden;
   left:0px;
   bottom:-20px;
+  background:gray;
 }
 #dashboard_indicator div{
   position:relative;

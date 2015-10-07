@@ -269,7 +269,7 @@ function key_down(e){
   }
   if(e.keyCode == 32){
     space_pressed = new Date().getTime();
-    if((space_pressed - last_space_pressed) < 200){
+    if((space_pressed - last_space_pressed) < 400 && ui.inputs.text.value.slice(-1) == ' '){
       if(ui.inputs.text.value.length < ui.inputs.guess.value.length && ui.inputs.autofill.checked == true){
           e.preventDefault();
           ui.inputs.text.value = node.guess_next(ui.inputs.text.value.substring(0, ui.inputs.text.value.length-1)) + " ";
@@ -497,7 +497,7 @@ function add_card(card){
 
 function get_question_state(q){
   if(q.responses.length == 0){return "unanswered";}
-  else if(q.responses.length < 2){return "unconfident";}
+  else if(q.responses.length < 3){return "unconfident";}
   else{
     var responses = {};
     var response_vols = [];
@@ -534,7 +534,6 @@ function poll_for_instances(){
   }
   setTimeout(function(){
     var ins = node.get_instances();
-    ui.info.questions.innerHTML = "";
     for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
     for(var i = 0; i < ins.length; i++){
       // Detect if type of card. If so, filter and add to UI if necessary
@@ -543,7 +542,6 @@ function poll_for_instances(){
         for(var j = 0; j < tos.length; j++){
           if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
             add_card(ins[i]);
-            //add_card(node.get_instance_value(ins[i], "content"), false, ins[i].name, node.get_instance_relationship(ins[i], "is from").name, node.get_instance_value(ins[i], "linked content"), node.get_instance_type(ins[i]));
           }
         }
       }
@@ -566,6 +564,7 @@ function poll_for_instances(){
         }
       }
     }
+    ui.info.questions.innerHTML = "";
     user.score = 0;
     var ratios = {};
     for(var i = 0; i < user.questions.length ; i++){
@@ -579,8 +578,12 @@ function poll_for_instances(){
       }
       ratios[state]++;
     }
+    var bars = document.getElementById('dashboard_indicator').getElementsByTagName('div');
+    for(var i = 0; i < bars.length; i++){
+      bars[i].style.width = "0%";
+    }
     for(var type in ratios){
-      document.getElementById(type).style.width = ratios[type] * 100 / parseFloat(user.questions.length)+'%';
+      document.getElementById(type).style.width = Math.floor(ratios[type] * 100 / parseFloat(user.questions.length))+'%';
     }
     update_ui();
     poll_for_instances();
