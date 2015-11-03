@@ -238,8 +238,8 @@ function login(e){
     node = new CENode(MODELS.CORE, SHERLOCK_CORE);
     ui.info.online_status.style.display = "none";
   }
-  node.set_agent_name(user.id+" agent");
-  node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.get_agent_name().replace(/'/g, "\\\'")+"\\'' as content");
+  node.agent.set_name(user.id+" agent");
+  node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.agent.get_name().replace(/'/g, "\\\'")+"\\'' as content");
   node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
 
   settings.logged_in = true;  
@@ -338,7 +338,7 @@ function send(){
   var sentence = input.replace(/'/g, "\\'");
   var card;
   if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
-    card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
     add_card_simple(input, 'user');
   }
   else{
@@ -348,7 +348,7 @@ function send(){
     }
     submitted_statements.push(input.toLowerCase());
 
-    card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
+    card = "there is an nl card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
     add_card_simple(input, 'user');
   }
   node.add_sentence(card);
@@ -366,7 +366,7 @@ function confirm_card(id, content){
   submitted_statements.push(content.toLowerCase());
 
   add_card_simple("Yes.", 'user');
-  var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.get_agent_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp and is in reply to the card '"+id+"'";
+  var card = "there is a tell card named 'msg_{uid}' that has '"+content.replace(/'/g, "\\'")+"' as content and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp and is in reply to the card '"+id+"'";
   card+=" and has '"+log.keypresses+"' as number of keystrokes";
   card+=" and has '"+log.end_time+"' as submit time";
   card+=" and has '"+log.start_time+"' as start time";
@@ -388,44 +388,6 @@ function unconfirm_card(id){
   add_card_simple("OK.", 'friend');
   forbid_input = false;
 }
-
-/*function ask_question_based_on_input(sentence){
-  var ins = node.get_instances("sherlock thing", true);
-  var concerns;
-  var potentials = {};
-  for(var i = 0; i < ins.length; i++){
-    if(sentence.toLowerCase().indexOf(ins[i].name.toLowerCase()) > -1){
-      concerns = ins[i];
-      break
-    }
-  }
-  if(concerns == null){return;}
-  for(var i  = 0; i < user.questions.length; i++){
-    if(user.questions[i].concerns == concerns.name){
-      var state = get_question_state(user.questions[i]);
-      if(state != "answered" && asked_questions.indexOf(user.questions[i].text) == -1){
-        if(potentials[state] == null){potentials[state] = [];}
-        potentials[state].push(user.questions[i]);     
-      }     
-    }
-  }
-  var card = "there is an ask card named 'msg_"+user.id+"_sherlock' that is from the agent 'Sherlock' and is to the individual '"+user.id+"' that has '{now}' as timestamp and has ";
-  var content;
-  if(potentials.contested != null){
-    content = potentials.contested[0].text;
-    asked_questions.push(potentials.contested[0].text);
-  }
-  else if(potentials.unconfident != null){
-    content = potentials.unconfident[0].text;
-    asked_questions.push(potentials.unconfident[0].text);
-  }
-  else if(potentials.unanswered != null){
-    content = potentials.unanswered[0].text;
-    asked_questions.push(potentials.unanswered[0].text);
-  }
-  card+="'"+content+"' as content.";
-  node.add_sentence(card);
-}*/
 
 function update_ui(){
   if(settings.logged_in == true){
@@ -454,14 +416,14 @@ function add_card_simple(text, user){
 }
 
 function add_card(card){
-  var content = node.get_instance_value(card, 'content');
+  var content = card.content;
   var id = card.name;
-  var tos = node.get_instance_relationships(card, 'is to').map(function(to){
+  var tos = card.is_tos.map(function(to){
     return to.name.toLowerCase();
   });
-  var from = node.get_instance_relationship(card, 'is from').name;
-  var card_type = node.get_instance_type(card);
-  var linked_content = node.get_instance_value(card, 'linked content');
+  var from = card.is_from.name;
+  var card_type = card.type;
+  var linked_content = card.linked_content;
   
   if(!content){return;}
   if(id == null || (id != null && shown_cards.indexOf(id) == -1)){
@@ -477,11 +439,11 @@ function add_card(card){
     }
     c+='">';
     c+='<p>';
-    if(card_type != null && card_type == "confirm card"){
+    if(card_type != null && card_type.name == "confirm card"){
       c+='OK. Is this what you meant?<br /><br />';
     }
     c+=content.replace(/(?:\r\n|\r|\n)/g, ' <br /> ').replace(/  /g, '&nbsp;&nbsp;')+'</p>';
-    if(card_type != null && card_type == "confirm card"){
+    if(card_type != null && card_type.name == "confirm card"){
       c+='<button id="confirm_'+id+'" class="confirm" onclick="confirm_card(\''+id+'\', \''+content.replace(/'/g, "\\'")+'\')">Yes</button>';
       c+='<button id="unconfirm_'+id+'" class="unconfirm" onclick="unconfirm_card(\''+id+'\')">No</button>';
       forbid_input = true;
@@ -519,10 +481,11 @@ function load_questions(){
     var q = {};
     q.responses = [];
     for(var j = 0; j < qs[i].values.length; j++){
-      q[qs[i].values[j].descriptor] = qs[i].values[j].type_name;
+      var ins_name = typeof qs[i].values[j].instance == 'string' ? qs[i].values[j].instance : qs[i].values[j].instance.name;
+      q[qs[i].values[j].descriptor] = ins_name;
     }
     for(var j = 0; j < qs[i].relationships.length; j++){
-      q[qs[i].relationships[j].label] = qs[i].relationships[j].target_name;
+      q[qs[i].relationships[j].label] = qs[i].relationships[j].instance.name;
     }
     user.questions.push(q);
   }
@@ -537,8 +500,8 @@ function poll_for_instances(){
     for(var i = 0; i < user.questions.length; i++){user.questions[i].responses = [];}
     for(var i = 0; i < ins.length; i++){
       // Detect if type of card. If so, filter and add to UI if necessary
-      if(node.get_instance_type(ins[i]).indexOf("card") > -1){
-        var tos = node.get_instance_relationships(ins[i], "is to");
+      if(ins[i].type.name.indexOf("card") > -1){
+        var tos = ins[i].is_tos;
         for(var j = 0; j < tos.length; j++){
           if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
             add_card(ins[i]);
@@ -552,12 +515,21 @@ function poll_for_instances(){
           if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
             if(question.value != null){
               for(var k = 0; k < instance.values.length; k++){
-                if(instance.values[k].descriptor == question.value){question.responses.push(instance.values[k].type_name.toLowerCase());}
+                if(instance.values[k].descriptor == question.value){
+                  if(typeof instance.values[k].instance == "string"){
+                    question.responses.push(instance.values[k].instance.toLowerCase());
+                  }
+                  else{
+                    question.responses.push(instance.values[k].instance.name.toLowerCase());
+                  }
+                }
               }
             }
             if(question.relationship != null){
               for(var k = 0; k < instance.relationships.length; k++){
-                if(instance.relationships[k].label == question.relationship){question.responses.push(instance.relationships[k].target_name.toLowerCase());}
+                if(instance.relationships[k].label == question.relationship){
+                  question.responses.push(instance.relationships[k].instance.name.toLowerCase());
+                }
               }
             }
           }
@@ -602,7 +574,7 @@ function log_cards(){
     if(unlogged_cards.length == 0){
       setTimeout(function(){
          log_cards();
-      }, 1000*3); 
+      }, 3000); 
       return;
     }  
 
@@ -615,12 +587,12 @@ function log_cards(){
             logged_cards.push(unlogged_cards[i].name);
           }
           log_cards();
-        }, 1000*3);
+        }, 8000);
       }
       else if(xhr.readyState == 4 && xhr.status != 200){
         setTimeout(function(){
           log_cards();
-        }, 1000*3);
+        }, 3000);
       }
     }
     xhr.send(JSON.stringify(unlogged_cards));
@@ -629,13 +601,13 @@ function log_cards(){
     console.log(err);
     setTimeout(function(){
       log_cards();
-    }, 1000);
+    }, 3000);
   }
 }
 
 function check_online(){
   var now = new Date().getTime();
-  var last = node.get_agent().get_last_successful_request();
+  var last = node.agent.get_last_successful_request();
   var diff = now - last;
   if(diff < 5000){
     ui.info.online_status.style.backgroundColor = "green";
