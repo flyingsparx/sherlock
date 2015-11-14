@@ -430,7 +430,7 @@ function add_card(card){
     shown_cards.push(id);
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
     var c = '<li class="card';
-    if(tos.indexOf(user.id) > -1){c+=' user';}
+    if(tos && tos.indexOf(user.id) > -1){c+=' user';}
     else{
       c+=' friend';
       if(navigator.vibrate){
@@ -482,7 +482,7 @@ function load_questions(){
     q.responses = [];
     for(var j = 0; j < qs[i].values.length; j++){
       var ins_name = typeof qs[i].values[j].instance == 'string' ? qs[i].values[j].instance : qs[i].values[j].instance.name;
-      q[qs[i].values[j].descriptor] = ins_name;
+      q[qs[i].values[j].label] = ins_name;
     }
     for(var j = 0; j < qs[i].relationships.length; j++){
       q[qs[i].relationships[j].label] = qs[i].relationships[j].instance.name;
@@ -502,11 +502,11 @@ function poll_for_instances(){
       // Detect if type of card. If so, filter and add to UI if necessary
       if(ins[i].type.name.indexOf("card") > -1){
         var tos = ins[i].is_tos;
-        for(var j = 0; j < tos.length; j++){
+        if(tos){for(var j = 0; j < tos.length; j++){
           if(tos[j].name.toLowerCase() == user.id.toLowerCase()){
             add_card(ins[i]);
           }
-        }
+        }}
       }
       else{
         for(var j = 0; j < user.questions.length; j++){
@@ -515,7 +515,7 @@ function poll_for_instances(){
           if(question.concerns.toLowerCase() == instance.name.toLowerCase()){
             if(question.value != null){
               for(var k = 0; k < instance.values.length; k++){
-                if(instance.values[k].descriptor == question.value){
+                if(instance.values[k].label == question.value){
                   if(typeof instance.values[k].instance == "string"){
                     question.responses.push(instance.values[k].instance.toLowerCase());
                   }
