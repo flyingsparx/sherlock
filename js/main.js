@@ -18,10 +18,10 @@ var SHERLOCK_CORE = [
   "conceptualise a ~ fruit ~ F that is a sherlock thing and is a locatable thing",
   "conceptualise a ~ room ~ R that is a location and is a sherlock thing",
   "conceptualise a ~ shirt colour ~ C",
-  "conceptualise the shirt colour C ~ is worn by ~ the character C",
   "conceptualise a ~ sport ~ S",
   "conceptualise a ~ character ~ C that is a sherlock thing and is a locatable thing and has the shirt colour C as ~ shirt colour ~",
   "conceptualise the character C ~ works for ~ the organisation O and ~ eats ~ the fruit F and ~ plays ~ the sport S",
+  "conceptualise the shirt colour C ~ is worn by ~ the character C",
   "conceptualise the room R ~ contains ~ the fruit F and has the character C as ~ contents ~",
   "conceptualise the fruit F ~ is eaten by ~ the character C",
   "conceptualise the sport S ~ is played by ~ the character C",
@@ -86,6 +86,17 @@ var SHERLOCK_CORE = [
   "there is a sport named 'softball'",
   "there is a sport named 'cricket'",
   "there is a sport named 'golf'",
+
+  "conceptualise an ~ object ~ O that is an entity",
+  "conceptualise the object O ~ resides in ~ the room R",
+  "conceptualise the room R has the object O as ~ additional contents ~",
+  "there is a rule named objectrule1 that has 'if the object O ~ is in ~ the room R then the room R has the object O as ~ additional contents ~' as instruction",
+  "there is an object named 'gorilla'",
+  "there is an object named 'dinosaur'",
+  "there is an object named 'robot'",
+  "there is an object named 'elephant'",
+  "there is an object named 'ghost'",
+  "there is an object named 'balloon'",
 
   "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
   "there is a question named 'q2' that has 'What sport does Dr Finch play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
@@ -239,8 +250,10 @@ function login(e){
     ui.info.online_status.style.display = "none";
   }
   node.agent.set_name(user.id+" agent");
-  node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.agent.get_name().replace(/'/g, "\\\'")+"\\'' as content");
-  node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
+  window.setTimeout(function(){
+    node.add_sentence("there is a tell card named 'msg_{uid}' that is from the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and has the timestamp '{now}' as timestamp and has 'there is an agent named \\'"+node.agent.get_name().replace(/'/g, "\\\'")+"\\'' as content");
+    node.add_sentence("there is a feedback policy named 'p3' that has the individual '"+user.id+"' as target and has 'true' as enabled and has 'full' as acknowledgement"); 
+  }, 100);
 
   settings.logged_in = true;  
   user.selected_screen = "moira";
@@ -337,7 +350,15 @@ function send(){
 
   var sentence = input.replace(/'/g, "\\'");
   var card;
-  if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
+  if(sentence.toLowerCase().trim() == 'show anomalies'){
+    add_card_simple(sentence, 'user');
+    var objects = node.concepts.object.instances;
+    for(var i = 0; i < objects.length; i++){
+      add_card_simple(objects[i].gist, 'friend');
+    }
+    return;
+  }
+  else if(sentence.toLowerCase().indexOf("who ") == 0 || sentence.toLowerCase().indexOf("what ") == 0 || sentence.toLowerCase().indexOf("where ") == 0 || sentence.toLowerCase().indexOf("list ") == 0){
     card = "there is an ask card named 'msg_{uid}' that has '"+sentence+"' as content and is to the agent '"+node.agent.get_name().replace(/'/g, "\\'")+"' and is from the individual '"+user.id+"' and has the timestamp '{now}' as timestamp";
     add_card_simple(input, 'user');
   }
