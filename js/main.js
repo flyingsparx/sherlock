@@ -3,7 +3,6 @@ var shown_cards = [];
 var asked_questions = [];
 var submitted_statements = [];
 var scored_cards = [];
-var logged_cards = [];
 var space_pressed = 0;
 var last_space_pressed = 0;
 var forbid_input = false;
@@ -11,6 +10,11 @@ var multiplayer;
 var last_successful_request = 0;
 var latest_latitude = null;
 var latest_longitude = null;
+
+var logging_configs = [
+  {url: 'http://logger.cenode.io/cards/sherlock', logged_cards: []},
+  {url: 'http://logger2.cenode.io/cards/sherlock', logged_cards: []}
+];
 
 var SHERLOCK_CORE = [
   "conceptualise a ~ sherlock thing ~ S that is an entity and is an imageable thing",
@@ -263,7 +267,9 @@ function login(e){
   update_ui();
   load_questions();//fetch_questions();
   poll_for_instances();
-  log_cards();
+  for(var i = 0; i < logging_configs.length; i++){
+    log_cards(logging_configs[i]);
+  }
 }
 
 
@@ -583,45 +589,57 @@ function poll_for_instances(){
   },1000);
 }
 
-function log_cards(){
+function log_cards(config){
   try{
     var cards = node.get_instances("card", true);
+    var properties = ['timestamp', 'content', 'is in reply to', 'is from', 'number of keystrokes', 'submit time', 'start time', 'latitude', 'longitude'];
     var unlogged_cards = [];
     for(var i = 0; i < cards.length; i++){
-      if(logged_cards.indexOf(cards[i].name) == -1){
-        unlogged_cards.push(cards[i]);
+      if(config.logged_cards.indexOf(cards[i].name) == -1){
+        var card_to_log = {};
+        card_to_log.name = cards[i].name;
+        card_to_log.type = cards[i].type.name;
+        for(var j = 0; j < properties.length; j++){
+          var prop = properties[j];
+          if(cards[i].property(prop)){
+            card_to_log[prop] = cards[i].property(prop).name || cards[i].property(prop);
+          }
+        }
+        unlogged_cards.push(card_to_log);
       }  
     }
     if(unlogged_cards.length == 0){
       setTimeout(function(){
-         log_cards();
+         log_cards(config);
       }, 3000); 
       return;
     }  
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://logger.cenode.io/cards/sherlock");
+    console.log('logging to',config.url);
+    xhr.open("POST", config.url);
     xhr.onreadystatechange = function(){
       if(xhr.readyState == 4 && xhr.status == 200){
         setTimeout(function(){
           for(var i = 0; i < unlogged_cards.length; i++){
-            logged_cards.push(unlogged_cards[i].name);
+            config.logged_cards.push(unlogged_cards[i].name);
           }
-          log_cards();
+          log_cards(config);
         }, 8000);
       }
       else if(xhr.readyState == 4 && xhr.status != 200){
         setTimeout(function(){
-          log_cards();
+          log_cards(config);
         }, 3000);
       }
     }
+    console.log(unlogged_cards);
     xhr.send(JSON.stringify(unlogged_cards));
   }
   catch(err){
     console.log(err);
     setTimeout(function(){
-      log_cards();
+      log_cards(config);
     }, 3000);
   }
 }
