@@ -94,7 +94,7 @@ var SHERLOCK_CORE = [
   "conceptualise an ~ object ~ O that is an entity",
   "conceptualise the object O ~ resides in ~ the room R",
   "conceptualise the room R has the object O as ~ additional contents ~",
-  "there is a rule named objectrule1 that has 'if the object O ~ is in ~ the room R then the room R has the object O as ~ additional contents ~' as instruction",
+  "there is a rule named objectrule1 that has 'if the object O ~ resides in ~ the room R then the room R has the object O as ~ additional contents ~' as instruction",
   "there is an object named 'gorilla'",
   "there is an object named 'dinosaur'",
   "there is an object named 'robot'",
