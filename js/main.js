@@ -98,6 +98,7 @@ var SHERLOCK_CORE = [
   "there is a sport named 'softball'",
   "there is a sport named 'cricket'",
   "there is a sport named 'golf'",
+  "there is a sport named 'basketball'",
 
   "there is a rule named objectrule1 that has 'if the object O ~ resides in ~ the room R then the room R has the object O as ~ additional contents ~' as instruction",
   "there is an object named 'gorilla'",
@@ -108,7 +109,44 @@ var SHERLOCK_CORE = [
   "there is an object named 'balloon'",
 
   "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
-  "there is a question named 'q2' that has 'What sport does Dr Finch play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
+  "there is a question named 'q2' that has 'What sport does Zebra play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Zebra'",
+  "there is a question named 'q3' that has 'What character eats apples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'apple'",
+  "there is a question named 'q4' that has 'What colour hat is Elephant wearing?' as text and has 'hat colour' as value and concerns the sherlock thing 'Elephant'",
+  "there is a question named 'q6' that has 'Where is Giraffe?' as text and has 'is in' as relationship and concerns the sherlock thing 'Giraffe'",
+  "there is a question named 'q7' that has 'What colour hat is Lion wearing?' as text and has 'hat colour' as value and concerns the sherlock thing 'Lion'",
+  "there is a question named 'q8' that has 'Where is Lion?' as text and has 'is in' as relationship and concerns the sherlock thing 'Lion'",
+  "there is a question named 'q9' that has 'Which character is in the emerald room?' as text and has 'contents' as value and concerns the sherlock thing 'Emerald Room'",
+  "there is a question named 'q12' that has 'What character eats bananas?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'banana'",
+  "there is a question named 'q13' that has 'What character is in the sapphire room?' as text and has 'contents' as value and concerns the sherlock thing 'Sapphire Room'",
+  "there is a question named 'q17' that has 'What sport does Elephant play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Elephant'",
+  "there is a question named 'q18' that has 'What character is wearing a red hat?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'red'",
+  "there is a question named 'q19' that has 'What character plays rugby?' as text and has 'is played by' as relationship and concerns the sherlock thing 'rugby'",
+  "there is a question named 'q20' that has 'What fruit does Leopard eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Leopard'",
+  "there is a question named 'q23' that has 'What fruit does Giraffe eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Giraffe'",
+  "there is a question named 'q24' that has 'What colour hat is Zebra wearing?' as text and has 'hat colour' as value and concerns the sherlock thing 'Zebra'",
+  "there is a question named 'q25' that has 'Where is the apple?' as text and has 'is in' as relationship and concerns the sherlock thing 'apple'",
+  "there is a question named 'q26' that has 'What character is wearing a yellow hat?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'yellow'",
+  "there is a question named 'q28' that has 'What fruit is in the silver room?' as text and has 'contains' as relationship and concerns the sherlock thing 'Silver Room'",
+  "there is a question named 'q30' that has 'What character is wearing a blue hat?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'blue'",
+  "there is a question named 'q31' that has 'What character eats lemons?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'lemon'",
+  "there is a question named 'q33' that has 'What fruit does Elephant eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Elephant'",
+  "there is a question named 'q34' that has 'What character plays basketball?' as text and has 'is played by' as relationship and concerns the sherlock thing 'basketball'",
+  "there is a question named 'q35' that has 'What character plays soccer?' as text and has 'is played by' as relationship and concerns the sherlock thing 'soccer'",
+  "there is a question named 'q36' that has 'What sport does Lion play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Lion'",
+  "there is a question named 'q37' that has 'What character is in the ruby room?' as text and has 'contents' as value and concerns the sherlock thing 'Ruby Room'",
+  "there is a question named 'q39' that has 'What character plays golf?' as text and has 'is played by' as relationship and concerns the sherlock thing 'golf'",
+  "there is a question named 'q40' that has 'What character eats oranges?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'orange'",
+  "there is a question named 'q41' that has 'What colour hat is Hippopotamus wearing?' as text and has 'hat colour' as value and concerns the sherlock thing 'Hippopotamus'",
+  "there is a question named 'q45' that has 'What character is in the amber room?' as text and has 'contents' as value and concerns the sherlock thing 'Amber Room'",
+  "there is a question named 'q47' that has 'Where is Elephant?' as text and has 'is in' as relationship and concerns the sherlock thing 'Elephant'",
+  "there is a question named 'q48' that has 'Where is the pear?' as text and has 'is in' as relationship and concerns the sherlock thing 'pear'",
+  "there is a question named 'q50' that has 'What fruit does Lion eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Lion'",
+  "there is a question named 'q52' that has 'What sport does Giraffe play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Giraffe'",
+  "there is a question named 'q53' that has 'Where is Hippopotamus?' as text and has 'is in' as relationship and concerns the sherlock thing 'Hippopotamus'",
+  "there is a question named 'q54' that has 'What sport does Hippopotamus play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Hippopotamus'"
+/*
+  "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
+  "there is a question named 'q2' that has 'What sport does Zebra play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
   "there is a question named 'q3' that has 'What character eats apples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'apple'",
   "there is a question named 'q4' that has 'What colour shirt is Prof Crane wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Prof Crane'",
   "there is a question named 'q6' that has 'Where is Col Robin?' as text and has 'is in' as relationship and concerns the sherlock thing 'Col Robin'",
@@ -143,6 +181,7 @@ var SHERLOCK_CORE = [
   "there is a question named 'q52' that has 'What sport does Col Robin play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Col Robin'",
   "there is a question named 'q53' that has 'Where is Capt Falcon?' as text and has 'is in' as relationship and concerns the sherlock thing 'Capt Falcon'",
   "there is a question named 'q54' that has 'What sport does Capt Falcon play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Capt Falcon'"
+*/
 ];
 
 var SHERLOCK_NODE = [
