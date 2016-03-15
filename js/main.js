@@ -616,7 +616,6 @@ function log_cards(config){
     }  
 
     var xhr = new XMLHttpRequest();
-    console.log('logging to',config.url);
     xhr.open("POST", config.url);
     xhr.onreadystatechange = function(){
       if(xhr.readyState == 4 && xhr.status == 200){
@@ -625,22 +624,21 @@ function log_cards(config){
             config.logged_cards.push(unlogged_cards[i].name);
           }
           log_cards(config);
-        }, 8000);
+        }, 10000);
       }
       else if(xhr.readyState == 4 && xhr.status != 200){
         setTimeout(function(){
           log_cards(config);
-        }, 3000);
+        }, 5000);
       }
     }
-    console.log(unlogged_cards);
     xhr.send(JSON.stringify(unlogged_cards));
   }
   catch(err){
     console.log(err);
     setTimeout(function(){
       log_cards(config);
-    }, 3000);
+    }, 5000);
   }
 }
 
