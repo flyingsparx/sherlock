@@ -719,7 +719,9 @@ var loadChat = function() {
   // document.getElementById('wrapper').style.height = window.innerHeight+'px';
 
   var content = document.getElementById("main-content");
-  content.style.height = (window.innerHeight - 50) + "px";
+  if(content){
+    content.style.height = (window.innerHeight - 50) + "px";
+  }
 }
 
 window.onload = function(){
