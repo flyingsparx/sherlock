@@ -11,8 +11,8 @@ var latest_longitude = null;
 var latest_card = null;
 
 var logging_configs = [
-  {url: 'http://logger.cenode.io/cards/sherlock', logged_cards: []},
-  {url: 'http://logger2.cenode.io/cards/sherlock', logged_cards: []}
+  {url: 'http://logger.cenode.io/cards/sherlockSam', logged_cards: []},
+  {url: 'http://logger2.cenode.io/cards/sherlockSam', logged_cards: []}
 ];
 
 var SHERLOCK_CORE = [
@@ -103,7 +103,6 @@ var SHERLOCK_CORE = [
   "there is an object named 'gorilla'",
   "there is an object named 'dinosaur'",
   "there is an object named 'robot'",
-//  "there is an object named 'elephant'",
   "there is an object named 'ghost'",
   "there is an object named 'balloon'",
 
@@ -143,50 +142,6 @@ var SHERLOCK_CORE = [
   "there is a question named 'q52' that has 'What sport does Giraffe play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Giraffe'",
   "there is a question named 'q53' that has 'Where is Hippopotamus?' as text and has 'is in' as relationship and concerns the sherlock thing 'Hippopotamus'",
   "there is a question named 'q54' that has 'What sport does Hippopotamus play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Hippopotamus'"
-/*
-  "there is a question named 'q1' that has 'What character eats pineapples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'pineapple'",
-  "there is a question named 'q2' that has 'What sport does Zebra play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Dr Finch'",
-  "there is a question named 'q3' that has 'What character eats apples?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'apple'",
-  "there is a question named 'q4' that has 'What colour shirt is Prof Crane wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Prof Crane'",
-  "there is a question named 'q6' that has 'Where is Col Robin?' as text and has 'is in' as relationship and concerns the sherlock thing 'Col Robin'",
-  "there is a question named 'q7' that has 'What colour shirt is Sgt Stork wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Sgt Stork'",
-  "there is a question named 'q8' that has 'Where is Sgt Stork?' as text and has 'is in' as relationship and concerns the sherlock thing 'Sgt Stork'",
-  "there is a question named 'q9' that has 'Which character is in the emerald room?' as text and has 'contents' as value and concerns the sherlock thing 'Emerald Room'",
-  "there is a question named 'q12' that has 'What character eats bananas?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'banana'",
-  "there is a question named 'q13' that has 'What character is in the sapphire room?' as text and has 'contents' as value and concerns the sherlock thing 'Sapphire Room'",
-  "there is a question named 'q17' that has 'What sport does Prof Crane play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Prof Crane'",
-  "there is a question named 'q18' that has 'What character is wearing a red shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'red'",
-  "there is a question named 'q19' that has 'What character plays rugby?' as text and has 'is played by' as relationship and concerns the sherlock thing 'rugby'",
-  "there is a question named 'q20' that has 'What fruit does Rev Hawk eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Rev Hawk'",
-  "there is a question named 'q23' that has 'What fruit does Col Robin eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Col Robin'",
-  "there is a question named 'q24' that has 'What colour shirt is Dr Finch wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Dr Finch'",
-  "there is a question named 'q25' that has 'Where is the apple?' as text and has 'is in' as relationship and concerns the sherlock thing 'apple'",
-  "there is a question named 'q26' that has 'What character is wearing a yellow shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'yellow'",
-  "there is a question named 'q28' that has 'What fruit is in the silver room?' as text and has 'contains' as relationship and concerns the sherlock thing 'Silver Room'",
-  "there is a question named 'q30' that has 'What character is wearing a black shirt?' as text and has 'is worn by' as relationship and concerns the sherlock thing 'black'",
-  "there is a question named 'q31' that has 'What character eats lemons?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'lemon'",
-  "there is a question named 'q33' that has 'What fruit does Prof Crane eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Prof Crane'",
-  "there is a question named 'q34' that has 'What character plays baseball?' as text and has 'is played by' as relationship and concerns the sherlock thing 'baseball'",
-  "there is a question named 'q35' that has 'What character plays soccer?' as text and has 'is played by' as relationship and concerns the sherlock thing 'soccer'",
-  "there is a question named 'q36' that has 'What sport does Sgt Stork play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Sgt Stork'",
-  "there is a question named 'q37' that has 'What character is in the ruby room?' as text and has 'contents' as value and concerns the sherlock thing 'Ruby Room'",
-  "there is a question named 'q39' that has 'What character plays golf?' as text and has 'is played by' as relationship and concerns the sherlock thing 'golf'",
-  "there is a question named 'q40' that has 'What character eats oranges?' as text and has 'is eaten by' as relationship and concerns the sherlock thing 'orange'",
-  "there is a question named 'q41' that has 'What colour shirt is Capt Falcon wearing?' as text and has 'shirt colour' as value and concerns the sherlock thing 'Capt Falcon'",
-  "there is a question named 'q45' that has 'What character is in the amber room?' as text and has 'contents' as value and concerns the sherlock thing 'Amber Room'",
-  "there is a question named 'q47' that has 'Where is Prof Crane?' as text and has 'is in' as relationship and concerns the sherlock thing 'Prof Crane'",
-  "there is a question named 'q48' that has 'Where is the pear?' as text and has 'is in' as relationship and concerns the sherlock thing 'pear'",
-  "there is a question named 'q50' that has 'What fruit does Sgt Stork eat?' as text and has 'eats' as relationship and concerns the sherlock thing 'Sgt Stork'",
-  "there is a question named 'q52' that has 'What sport does Col Robin play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Col Robin'",
-  "there is a question named 'q53' that has 'Where is Capt Falcon?' as text and has 'is in' as relationship and concerns the sherlock thing 'Capt Falcon'",
-  "there is a question named 'q54' that has 'What sport does Capt Falcon play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Capt Falcon'"
-*/
-];
-
-var SHERLOCK_NODE = [
-  "there is an agent named 'Mycroft' that has 'http://mycroft.cenode.io' as address",
-  "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'Mycroft' as target",
-  "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'Mycroft' as target"
 ];
 
 var settings = {
@@ -247,11 +202,8 @@ function initialize_ui(){
   ui.inputs.autofill = document.getElementById("autofill");
   ui.overlays.login = document.getElementById("login_overlay");
   ui.overlays.moira = document.getElementById("moira_overlay");
-  // ui.overlays.dashboard = document.getElementById("dashboard_overlay");
   ui.info.cards = document.getElementById("cards");
-  // ui.info.questions = document.getElementById("questions");
   ui.info.login_error = document.getElementById("login_error");
-  // ui.info.score = document.getElementById("score");
   ui.info.online_status = document.getElementById("online_status");
   ui.view_changers = document.getElementsByClassName("change_view");
 }
@@ -429,12 +381,8 @@ function confirm_card(id, content){
     card+=" and has '"+latest_latitude+"' as latitude";
     card+=" and has '"+latest_longitude+"' as longitude";
   }
-
   node.add_sentence(card);
   ui.inputs.text.focus();
-  /*setTimeout(function(){
-    ask_question_based_on_input(content);
-  }, 1500);*/
 }
 
 function unconfirm_card(id){
@@ -442,18 +390,16 @@ function unconfirm_card(id){
   document.getElementById("unconfirm_"+id).style.display = "none";
   add_card_simple("No.", 'user');
   add_card_simple("OK.", 'friend');
+  ui.inputs.text.focus();
 }
 
 function update_ui(){
   if(settings.logged_in == true){
     ui.overlays.login.style.display = "none";
-    // ui.info.score.innerHTML = user.score+' points';
     if(user.selected_screen == "moira"){
       ui.overlays.moira.style.display = "block";
-      // ui.overlays.dashboard.style.display = "none";
     }
     else if(user.selected_screen == "dashboard"){
-      // ui.overlays.dashboard.style.display = "block";
       ui.overlays.moira.style.display = "none";
     }
   }
@@ -696,7 +642,6 @@ var record_position = function(position){
 window.onresize = function(event) {
   ui.info.cards.style.height = (window.innerHeight - 350)+'px';
   ui.info.cards.scrollTop = ui.info.cards.scrollHeight;
-  // document.getElementById('wrapper').style.height = window.innerHeight+'px';
 
   var content = document.getElementById("main-content");
   content.style.height = (window.innerHeight - 50) + "px";
@@ -710,13 +655,11 @@ var loadChat = function() {
   initialize_ui();
   bind_listeners();
   ui.overlays.moira.style.display = "none";
-  // ui.overlays.dashboard.style.display = "none";
   if (navigator.geolocation) {
     navigator.geolocation.watchPosition(record_position);
   }
   ui.inputs.text.focus();
   ui.info.cards.style.height = (window.innerHeight - 350)+'px';
-  // document.getElementById('wrapper').style.height = window.innerHeight+'px';
 
   var content = document.getElementById("main-content");
   if(content){
