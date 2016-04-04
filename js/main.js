@@ -429,6 +429,7 @@ function confirm_card(id, content){
   document.getElementById("confirm_"+id).style.display = "none";
   document.getElementById("unconfirm_"+id).style.display = "none";
   forbid_input = false;
+  ui.inputs.text.focus();
 
   if(submitted_statements.indexOf(content.toLowerCase()) > -1){
     add_card_simple("I cannot accept duplicate information from the same user.", 'friend');
@@ -458,6 +459,7 @@ function unconfirm_card(id){
   add_card_simple("No.", 'user');
   add_card_simple("OK.", 'friend');
   forbid_input = false;
+  ui.inputs.text.focus();
 }
 
 function update_ui(){
