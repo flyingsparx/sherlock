@@ -30,7 +30,7 @@ var SHERLOCK_CORE = [
   "conceptualise the object O ~ resides in ~ the room R",
   "conceptualise the room R ~ contains ~ the fruit F and has the character C as ~ contents ~ and has the object O as ~ additional contents ~",
   "conceptualise the fruit F ~ is eaten by ~ the character C",
-  "conceptualise the sport S ~ is played by ~ the character C",
+  "conceptualise the sport S ~ is played by ~ the character C and ~ is in ~ the room R",
   "conceptualise a ~ question ~ Q that has the value V as ~ text ~ and has the value W as ~ value ~ and has the value X as ~ relationship ~",
   "conceptualise the question Q ~ concerns ~ the sherlock thing C",
 
