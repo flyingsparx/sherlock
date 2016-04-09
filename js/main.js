@@ -500,7 +500,7 @@ function get_question_state(q){
     for(key in responses){response_vols.push(responses[key]);}
     response_vols.sort().reverse();
     if(response_vols.length == 1){return "answered";}
-    else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 3){return "answered";}
+    else if(response_vols.length > 1 && (response_vols[0]-response_vols[1]) >= 5){return "answered";}
     else{return "contested";}
   }
 }
