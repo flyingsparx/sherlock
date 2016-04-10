@@ -489,7 +489,7 @@ function add_card(card){
 
 function get_question_state(q){
   if(q.responses.length == 0){return "unanswered";}
-  else if(q.responses.length < 3){return "unconfident";}
+  else if(q.responses.length < 5){return "unconfident";}
   else{
     var responses = {};
     var response_vols = [];
