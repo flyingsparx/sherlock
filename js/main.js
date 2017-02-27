@@ -249,12 +249,12 @@ function login(e){
   }
 
   if(multiplayer){
-    node = new CENode(MODELS.CORE, SHERLOCK_CORE, SHERLOCK_NODE);
+    node = new CENode(CEModels.core, SHERLOCK_CORE, SHERLOCK_NODE);
     ui.info.online_status.style.display = "block";
     check_online();
   }
   else{
-    node = new CENode(MODELS.CORE, SHERLOCK_CORE);
+    node = new CENode(CEModels.core, SHERLOCK_CORE);
     ui.info.online_status.style.display = "none";
   }
   node.agent.set_name(user.id+" agent");
