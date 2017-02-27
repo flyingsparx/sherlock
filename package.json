@@ -1,0 +1,13 @@
+{
+  "name": "sherlock",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flyingsparx/sherlock.git"
+  },
+  "author": "Will Webberley & Alun Preece",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cenode": "^3.0.3"
+  }
+}
