@@ -127,7 +127,7 @@ var SHERLOCK_CORE_MODEL = [
 ];
 
 var SHERLOCK_NODE_MODEL = [
-  "there is an agent named 'Mycroft' that has 'http://mycroft.cenode.io' as address",
-  "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'Mycroft' as target",
-  "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'Mycroft' as target"  
+  "there is an agent named 'SherlockBot' that has 'explorer.cenode.io:9876' as address",
+  "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'SherlockBot' as target",
+  "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'SherlockBot' as target"
 ];

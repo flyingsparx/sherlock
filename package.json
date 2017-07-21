@@ -8,6 +8,6 @@
   "author": "Will Webberley & Alun Preece",
   "license": "Apache-2.0",
   "dependencies": {
-    "cenode": "^3.0.3"
+    "cenode": "^3.0.11"
   }
 }

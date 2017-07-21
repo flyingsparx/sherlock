@@ -454,6 +454,7 @@ function pollForInstances(){
 }
 
 function logCards(config){
+  return;
   try{
     var cards = node.getInstances("card", true);
     var properties = ['timestamp', 'content', 'is in reply to', 'is from', 'number of keystrokes', 'submit time', 'start time', 'latitude', 'longitude'];
