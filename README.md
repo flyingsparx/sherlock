@@ -39,7 +39,7 @@ var CUSTOM_MODEL = [
 To start a new Sherlock game such that its world contains this information, we can pass it into the Docker container (given the model is saved in a file called `harry_potter.js`):
 
 ```
-docker run -p 80:80 ${PWD}/harry_potter.js:/models/custom.js flyingsparx/sherlock
+docker run -p 80:80 -v ${PWD}/harry_potter.js:/models/custom.js flyingsparx/sherlock
 ```
 
 ### Use case: multiplayer
@@ -59,7 +59,7 @@ var CUSTOM_MODEL = [
 And this can be passed into the Docker container as before to enable players of the game to exist in the same 'world':
 
 ```
-docker run -p 80:80 ${PWD}/multiplayer.js:/models/custom.js flyingsparx/sherlock
+docker run -p 80:80 -v ${PWD}/multiplayer.js:/models/custom.js flyingsparx/sherlock
 ```
 
 The policies on the node mean that the game allows players to continue even when they have no network connectivity. The games will sync up as individual players leave and join the network.
