@@ -6,13 +6,13 @@ var scoredCards = [];
 var spacePressed = 0;
 var lastSpacePressed = 0;
 var forbidInput = false;
-var multiplayer;
+//var multiplayer;
 var latestLatitude = null;
 var latestLongitude = null;
 
 var loggingConfigs = [
-  {url: 'http://logger.cenode.io/cards/sherlock', loggedCards: []},
-  {url: 'http://logger2.cenode.io/cards/sherlock', loggedCards: []}
+  //{url: 'http://logger.cenode.io/cards/sherlock', loggedCards: []},
+  //{url: 'http://logger2.cenode.io/cards/sherlock', loggedCards: []}
 ];
 
 var settings = {
@@ -48,7 +48,7 @@ var ui = {
     text : null,
     guess : null,
     autofill : null,
-    multiplayer: null
+    //multiplayer: null
   },
   overlays : {
     login : null,
@@ -72,7 +72,7 @@ function initializeUi(){
   ui.inputs.text = document.getElementById("text");
   ui.inputs.guess = document.getElementById("guess");
   ui.inputs.autofill = document.getElementById("autofill");
-  ui.inputs.multiplayer = document.getElementById("multiplayer");
+  //ui.inputs.multiplayer = document.getElementById("multiplayer");
   ui.overlays.login = document.getElementById("login_overlay");
   ui.overlays.moira = document.getElementById("moira_overlay");
   ui.overlays.dashboard = document.getElementById("dashboard_overlay");
@@ -107,21 +107,21 @@ function login(e){
   }
   user.id = ui.inputs.loginUserId.value.charAt(0).toUpperCase() + ui.inputs.loginUserId.value.slice(1);
   user.id = user.id.trim();
-  multiplayer = ui.inputs.multiplayer.checked == true;
+  //multiplayer = ui.inputs.multiplayer.checked == true;
   if(user.id == null || user.id == ""){
     ui.info.loginError.style.display = "block";
     return;
   }
 
-  if(multiplayer){
-    node = new CENode(CEModels.core, SHERLOCK_CORE_MODEL, SHERLOCK_NODE_MODEL);
+  //if(MULTIPLAYER_MODEL){
+    node = new CENode(CEModels.core, SHERLOCK_CORE_MODEL, CUSTOM_MODEL);
     ui.info.onlineStatus.style.display = "block";
     checkOnline();
-  }
+  /*}
   else{
-    node = new CENode(CEModels.core, SHERLOCK_CORE_MODEL);
+    node = new CENode(CEModels.core, SHERLOCK_CORE_MODEL, CUSTOM_MODEL);
     ui.info.onlineStatus.style.display = "none";
-  }
+  }*/
   node.attachAgent();
   node.agent.setName(user.id+" agent");
   window.setTimeout(function(){
@@ -454,7 +454,6 @@ function pollForInstances(){
 }
 
 function logCards(config){
-  return;
   try{
     var cards = node.getInstances("card", true);
     var properties = ['timestamp', 'content', 'is in reply to', 'is from', 'number of keystrokes', 'submit time', 'start time', 'latitude', 'longitude'];

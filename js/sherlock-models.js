@@ -125,9 +125,3 @@ var SHERLOCK_CORE_MODEL = [
   "there is a question named 'q53' that has 'Where is Hippopotamus?' as text and has 'is in' as relationship and concerns the sherlock thing 'Hippopotamus'",
   "there is a question named 'q54' that has 'What sport does Hippopotamus play?' as text and has 'plays' as relationship and concerns the sherlock thing 'Hippopotamus'"
 ];
-
-var SHERLOCK_NODE_MODEL = [
-  "there is an agent named 'SherlockBot' that has 'explorer.cenode.io:9876' as address",
-  "there is a tell policy named 'p2' that has 'true' as enabled and has the agent 'SherlockBot' as target",
-  "there is a listen policy named 'p4' that has 'true' as enabled and has the agent 'SherlockBot' as target"
-];
